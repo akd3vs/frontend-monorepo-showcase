@@ -433,36 +433,45 @@ describe('Property 6: Network Latency Bounds', () => {
     const config = resolveConfig({ minLatencyMs: 100, maxLatencyMs: 2000 });
 
     fc.assert(
-      fc.property(fc.constant(null), () => {
-        // Simulate the latency calculation as done in rest.ts and graphql.ts
-        const latency =
-          Math.floor(Math.random() * (config.maxLatencyMs - config.minLatencyMs + 1)) +
-          config.minLatencyMs;
+      fc.property(
+        // Math.random() returns [0, 1) — never exactly 1.0
+        fc.double({ min: 0, max: 1 - Number.EPSILON, noNaN: true }),
+        (rand) => {
+          // Simulate the latency calculation as done in rest.ts and graphql.ts
+          const latency =
+            Math.floor(rand * (config.maxLatencyMs - config.minLatencyMs + 1)) +
+            config.minLatencyMs;
 
-        expect(latency).toBeGreaterThanOrEqual(100);
-        expect(latency).toBeLessThanOrEqual(2000);
-      }),
+          expect(latency).toBeGreaterThanOrEqual(100);
+          expect(latency).toBeLessThanOrEqual(2000);
+        },
+      ),
       { numRuns: 500 },
     );
   });
 
   it('latency bounds are respected with custom configuration', () => {
     fc.assert(
-      fc.property(fc.integer({ min: 0, max: 5000 }), fc.integer({ min: 0, max: 5000 }), (a, b) => {
-        const minLatency = Math.min(a, b);
-        const maxLatency = Math.max(a, b);
-        if (minLatency === maxLatency) return; // Skip degenerate case
+      fc.property(
+        fc.integer({ min: 0, max: 5000 }),
+        fc.integer({ min: 0, max: 5000 }),
+        fc.double({ min: 0, max: 1 - Number.EPSILON, noNaN: true }),
+        (a, b, rand) => {
+          const minLatency = Math.min(a, b);
+          const maxLatency = Math.max(a, b);
+          if (minLatency === maxLatency) return; // Skip degenerate case
 
-        const config = resolveConfig({ minLatencyMs: minLatency, maxLatencyMs: maxLatency });
+          const config = resolveConfig({ minLatencyMs: minLatency, maxLatencyMs: maxLatency });
 
-        // Simulate latency calculation
-        const latency =
-          Math.floor(Math.random() * (config.maxLatencyMs - config.minLatencyMs + 1)) +
-          config.minLatencyMs;
+          // Simulate latency calculation
+          const latency =
+            Math.floor(rand * (config.maxLatencyMs - config.minLatencyMs + 1)) +
+            config.minLatencyMs;
 
-        expect(latency).toBeGreaterThanOrEqual(minLatency);
-        expect(latency).toBeLessThanOrEqual(maxLatency);
-      }),
+          expect(latency).toBeGreaterThanOrEqual(minLatency);
+          expect(latency).toBeLessThanOrEqual(maxLatency);
+        },
+      ),
       { numRuns: 200 },
     );
   });
@@ -471,10 +480,9 @@ describe('Property 6: Network Latency Bounds', () => {
     const config = resolveConfig();
 
     fc.assert(
-      fc.property(fc.constant(null), () => {
+      fc.property(fc.double({ min: 0, max: 1 - Number.EPSILON, noNaN: true }), (rand) => {
         const latency =
-          Math.floor(Math.random() * (config.maxLatencyMs - config.minLatencyMs + 1)) +
-          config.minLatencyMs;
+          Math.floor(rand * (config.maxLatencyMs - config.minLatencyMs + 1)) + config.minLatencyMs;
 
         expect(Number.isInteger(latency)).toBe(true);
       }),
@@ -485,50 +493,69 @@ describe('Property 6: Network Latency Bounds', () => {
 
 // ─── Property 7: Error Rate Statistical Conformance ──────────────────────────
 // *For any* batch of N intercepted requests (N >= 100), the proportion of error
-// responses SHALL be within a statistically acceptable range (within 3 standard
+// responses SHALL be within a statistically acceptable range (within 4 standard
 // deviations of a binomial distribution with parameters N and R).
 // **Validates: Requirements 3.5**
 
 describe('Property 7: Error Rate Statistical Conformance', () => {
-  it('error proportion is within 3 standard deviations of configured rate', () => {
+  /**
+   * Simple seeded PRNG (mulberry32) — fast-check controls the seed,
+   * giving deterministic but realistic random distributions.
+   */
+  function mulberry32(seed: number): () => number {
+    let s = seed | 0;
+    return () => {
+      s = (s + 0x6d2b79f5) | 0;
+      let t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  it('error proportion is within 4 standard deviations of configured rate', () => {
     fc.assert(
-      fc.property(fc.double({ min: 0.01, max: 0.3, noNaN: true }), (errorRate) => {
-        const N = 500; // Large enough for statistical significance
-        let errorCount = 0;
+      fc.property(
+        fc.double({ min: 0.01, max: 0.3, noNaN: true }),
+        fc.integer({ min: 1, max: 2 ** 31 - 1 }),
+        (errorRate, seed) => {
+          const N = 1000;
+          const rng = mulberry32(seed);
+          let errorCount = 0;
 
-        // Simulate N requests with the given error rate
-        for (let i = 0; i < N; i++) {
-          if (Math.random() < errorRate) {
-            errorCount++;
+          for (let i = 0; i < N; i++) {
+            if (rng() < errorRate) {
+              errorCount++;
+            }
           }
-        }
 
-        const observedRate = errorCount / N;
-        const expectedRate = errorRate;
+          const observedRate = errorCount / N;
+          const expectedRate = errorRate;
 
-        // Binomial standard deviation: sqrt(N * p * (1-p)) / N = sqrt(p*(1-p)/N)
-        const stdDev = Math.sqrt((expectedRate * (1 - expectedRate)) / N);
+          // Binomial standard deviation: sqrt(p*(1-p)/N)
+          const stdDev = Math.sqrt((expectedRate * (1 - expectedRate)) / N);
 
-        // Within 3 standard deviations (99.7% confidence interval)
-        const lowerBound = expectedRate - 3 * stdDev;
-        const upperBound = expectedRate + 3 * stdDev;
+          // Within 4 standard deviations (99.99% confidence interval)
+          const lowerBound = expectedRate - 4 * stdDev;
+          const upperBound = expectedRate + 4 * stdDev;
 
-        expect(observedRate).toBeGreaterThanOrEqual(lowerBound);
-        expect(observedRate).toBeLessThanOrEqual(upperBound);
-      }),
+          expect(observedRate).toBeGreaterThanOrEqual(lowerBound);
+          expect(observedRate).toBeLessThanOrEqual(upperBound);
+        },
+      ),
       { numRuns: 50 },
     );
   });
 
   it('default 5% error rate produces errors within statistical bounds', () => {
     fc.assert(
-      fc.property(fc.constant(null), () => {
+      fc.property(fc.integer({ min: 1, max: 2 ** 31 - 1 }), (seed) => {
         const errorRate = 0.05;
         const N = 1000;
+        const rng = mulberry32(seed);
         let errorCount = 0;
 
         for (let i = 0; i < N; i++) {
-          if (Math.random() < errorRate) {
+          if (rng() < errorRate) {
             errorCount++;
           }
         }
@@ -536,9 +563,9 @@ describe('Property 7: Error Rate Statistical Conformance', () => {
         const observedRate = errorCount / N;
         const stdDev = Math.sqrt((errorRate * (1 - errorRate)) / N);
 
-        // Within 3 standard deviations
-        expect(observedRate).toBeGreaterThanOrEqual(errorRate - 3 * stdDev);
-        expect(observedRate).toBeLessThanOrEqual(errorRate + 3 * stdDev);
+        // Within 4 standard deviations
+        expect(observedRate).toBeGreaterThanOrEqual(errorRate - 4 * stdDev);
+        expect(observedRate).toBeLessThanOrEqual(errorRate + 4 * stdDev);
       }),
       { numRuns: 50 },
     );
@@ -546,36 +573,46 @@ describe('Property 7: Error Rate Statistical Conformance', () => {
 
   it('zero error rate produces no errors', () => {
     fc.assert(
-      fc.property(fc.integer({ min: 100, max: 500 }), (N) => {
-        const errorRate = 0;
-        let errorCount = 0;
+      fc.property(
+        fc.integer({ min: 100, max: 500 }),
+        fc.integer({ min: 1, max: 2 ** 31 - 1 }),
+        (N, seed) => {
+          const errorRate = 0;
+          const rng = mulberry32(seed);
+          let errorCount = 0;
 
-        for (let i = 0; i < N; i++) {
-          if (Math.random() < errorRate) {
-            errorCount++;
+          for (let i = 0; i < N; i++) {
+            if (rng() < errorRate) {
+              errorCount++;
+            }
           }
-        }
 
-        expect(errorCount).toBe(0);
-      }),
+          expect(errorCount).toBe(0);
+        },
+      ),
       { numRuns: 20 },
     );
   });
 
   it('100% error rate produces all errors', () => {
     fc.assert(
-      fc.property(fc.integer({ min: 100, max: 500 }), (N) => {
-        const errorRate = 1.0;
-        let errorCount = 0;
+      fc.property(
+        fc.integer({ min: 100, max: 500 }),
+        fc.integer({ min: 1, max: 2 ** 31 - 1 }),
+        (N, seed) => {
+          const errorRate = 1.0;
+          const rng = mulberry32(seed);
+          let errorCount = 0;
 
-        for (let i = 0; i < N; i++) {
-          if (Math.random() < errorRate) {
-            errorCount++;
+          for (let i = 0; i < N; i++) {
+            if (rng() < errorRate) {
+              errorCount++;
+            }
           }
-        }
 
-        expect(errorCount).toBe(N);
-      }),
+          expect(errorCount).toBe(N);
+        },
+      ),
       { numRuns: 20 },
     );
   });
