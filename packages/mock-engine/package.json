@@ -1,6 +1,6 @@
 {
   "name": "@frontend-monorepo-showcase/mock-engine",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
