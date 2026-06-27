@@ -1,3 +1,13 @@
+## 0.0.4 (2026-06-27)
+
+### 🩹 Fixes
+
+- remove unsupported [build] section from wrangler.toml ([652ecb1](https://github.com/akd3vs/frontend-monorepo-showcase/commit/652ecb1))
+
+### ❤️ Thank You
+
+- Karell Contreras
+
 ## 0.0.3 (2026-06-27)
 
 This was a version bump only for @frontend-monorepo-showcase/perf-guardian to align it with other projects, there were no code changes.

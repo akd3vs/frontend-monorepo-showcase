@@ -1,3 +1,14 @@
+## 0.0.4 (2026-06-27)
+
+### 🩹 Fixes
+
+- use relative remote URLs for production Module Federation ([5ea4c42](https://github.com/akd3vs/frontend-monorepo-showcase/commit/5ea4c42))
+- remove unsupported [build] section from wrangler.toml ([652ecb1](https://github.com/akd3vs/frontend-monorepo-showcase/commit/652ecb1))
+
+### ❤️ Thank You
+
+- Karell Contreras
+
 ## 0.0.3 (2026-06-27)
 
 This was a version bump only for @frontend-monorepo-showcase/host-shell to align it with other projects, there were no code changes.
