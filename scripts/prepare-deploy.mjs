@@ -1,3 +1,4 @@
+/* global console */
 /**
  * Prepares the deploy/ directory for Cloudflare Pages by co-locating
  * all federated module assets with the Host_Shell output.
@@ -38,12 +39,12 @@ cpSync(DATA_DASHBOARD_DIST, resolve(DEPLOY_DIR, 'data-dashboard'), { recursive: 
 console.log('Copying Devtools_Panel dist → deploy/devtools-panel/');
 cpSync(DEVTOOLS_PANEL_DIST, resolve(DEPLOY_DIR, 'devtools-panel'), { recursive: true });
 
-// Copy _redirects for SPA routing if present in Host_Shell public
-const redirectsSrc = resolve(ROOT, 'apps/host-shell/public/_redirects');
-const redirectsDest = resolve(DEPLOY_DIR, '_redirects');
-if (existsSync(redirectsSrc) && !existsSync(redirectsDest)) {
-  cpSync(redirectsSrc, redirectsDest);
-  console.log('Copied _redirects for SPA routing');
+// Copy _routes.json for SPA routing if present in Host_Shell public
+const routesSrc = resolve(ROOT, 'apps/host-shell/public/_routes.json');
+const routesDest = resolve(DEPLOY_DIR, '_routes.json');
+if (existsSync(routesSrc) && !existsSync(routesDest)) {
+  cpSync(routesSrc, routesDest);
+  console.log('Copied _routes.json for SPA routing');
 }
 
 console.log('Deploy directory prepared successfully.');
