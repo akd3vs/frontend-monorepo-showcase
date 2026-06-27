@@ -5,10 +5,9 @@
  * Validates: Requirements 15.1, 15.5, 15.6
  */
 // @vitest-environment jsdom
-import React, { useState } from 'react';
-
 import { cleanup, render } from '@testing-library/react';
 import * as fc from 'fast-check';
+import React, { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ErrorBoundary, type ErrorBoundaryTelemetryEvent } from './index';
@@ -122,7 +121,7 @@ describe('Feature: enterprise-frontend-monorepo, Property 13: Error Boundary Esc
         };
 
         // We use a wrapper that can toggle throwing
-        let throwControl = { shouldThrow: false };
+        const throwControl = { shouldThrow: false };
 
         function ControlledThrower() {
           if (throwControl.shouldThrow) {
@@ -202,7 +201,6 @@ describe('Feature: enterprise-frontend-monorepo, Property 14: Error Boundary Sta
 
     // Arbitrary for initial sibling values
     const siblingValueArb = fc.integer({ min: -10000, max: 10000 });
-    const siblingCountArb = fc.integer({ min: 1, max: 5 });
 
     fc.assert(
       fc.property(

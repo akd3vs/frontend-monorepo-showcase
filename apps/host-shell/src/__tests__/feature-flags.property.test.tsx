@@ -16,17 +16,13 @@ import * as fc from 'fast-check';
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  FeatureFlagProvider,
-  useFeatureFlag,
-  useFeatureFlags,
-} from '../features/feature-flags';
+import { FeatureFlagProvider, useFeatureFlag, useFeatureFlags } from '../features/feature-flags';
+import { featureFlagRegistry } from '../features/feature-flags/registry';
 import {
   readPersistedState,
   writePersistedState,
   resolveOverrides,
 } from '../features/feature-flags/storage';
-import { featureFlagRegistry } from '../features/feature-flags/registry';
 
 // ─── localStorage mock ─────────────────────────────────────────────────────────
 
@@ -60,8 +56,9 @@ const knownFlagNames = Object.keys(featureFlagRegistry.flags);
 const flagNameArb = fc.constantFrom(...knownFlagNames);
 
 /** Arbitrary for a set of flag overrides (subset of known flags with random booleans) */
-const flagOverridesArb = fc.uniqueArray(flagNameArb, { minLength: 1, maxLength: knownFlagNames.length }).chain(
-  (names) =>
+const flagOverridesArb = fc
+  .uniqueArray(flagNameArb, { minLength: 1, maxLength: knownFlagNames.length })
+  .chain((names) =>
     fc.tuple(...names.map(() => fc.boolean())).map((values) => {
       const overrides: Record<string, boolean> = {};
       names.forEach((name, i) => {
@@ -69,7 +66,7 @@ const flagOverridesArb = fc.uniqueArray(flagNameArb, { minLength: 1, maxLength: 
       });
       return overrides;
     }),
-);
+  );
 
 // ─── Test helper components ─────────────────────────────────────────────────────
 
@@ -81,20 +78,11 @@ function FlagConsumer({ flagName }: { flagName: string }) {
   return <div data-testid="flag-value">{String(value)}</div>;
 }
 
-function FlagToggler({
-  flagName,
-  children,
-}: {
-  flagName: string;
-  children: React.ReactNode;
-}) {
+function FlagToggler({ flagName, children }: { flagName: string; children: React.ReactNode }) {
   const { setFlag, getFlag } = useFeatureFlags();
   return (
     <div>
-      <button
-        data-testid="toggle-btn"
-        onClick={() => setFlag(flagName, !getFlag(flagName))}
-      >
+      <button data-testid="toggle-btn" onClick={() => setFlag(flagName, !getFlag(flagName))}>
         Toggle
       </button>
       {children}
@@ -144,9 +132,7 @@ describe('Property 15: Feature Flag Reactivity and Persistence', () => {
 
           // The consumer re-rendered with the negated value
           expect(renderCount).toBeGreaterThan(initialRenderCount);
-          expect(screen.getByTestId('flag-value').textContent).toBe(
-            String(!defaultValue),
-          );
+          expect(screen.getByTestId('flag-value').textContent).toBe(String(!defaultValue));
 
           // Toggle again
           act(() => {
@@ -154,9 +140,7 @@ describe('Property 15: Feature Flag Reactivity and Persistence', () => {
           });
 
           // Value flips back
-          expect(screen.getByTestId('flag-value').textContent).toBe(
-            String(defaultValue),
-          );
+          expect(screen.getByTestId('flag-value').textContent).toBe(String(defaultValue));
 
           unmount();
         }),
@@ -166,40 +150,34 @@ describe('Property 15: Feature Flag Reactivity and Persistence', () => {
 
     it('for any flag and arbitrary toggle sequence, final value matches expected', () => {
       fc.assert(
-        fc.property(
-          flagNameArb,
-          fc.integer({ min: 1, max: 10 }),
-          (flagName, toggleCount) => {
-            localStorageMock.clear();
-            renderCount = 0;
+        fc.property(flagNameArb, fc.integer({ min: 1, max: 10 }), (flagName, toggleCount) => {
+          localStorageMock.clear();
+          renderCount = 0;
 
-            const { unmount } = render(
-              <FeatureFlagProvider>
-                <FlagToggler flagName={flagName}>
-                  <FlagConsumer flagName={flagName} />
-                </FlagToggler>
-              </FeatureFlagProvider>,
-            );
+          const { unmount } = render(
+            <FeatureFlagProvider>
+              <FlagToggler flagName={flagName}>
+                <FlagConsumer flagName={flagName} />
+              </FlagToggler>
+            </FeatureFlagProvider>,
+          );
 
-            const defaultValue = featureFlagRegistry.flags[flagName]!.defaultValue;
+          const defaultValue = featureFlagRegistry.flags[flagName]!.defaultValue;
 
-            // Toggle the flag toggleCount times
-            for (let i = 0; i < toggleCount; i++) {
-              act(() => {
-                screen.getByTestId('toggle-btn').click();
-              });
-            }
+          // Toggle the flag toggleCount times
+          for (let i = 0; i < toggleCount; i++) {
+            act(() => {
+              screen.getByTestId('toggle-btn').click();
+            });
+          }
 
-            // After an even number of toggles the value should equal default,
-            // after an odd number it should be negated
-            const expectedValue = toggleCount % 2 === 0 ? defaultValue : !defaultValue;
-            expect(screen.getByTestId('flag-value').textContent).toBe(
-              String(expectedValue),
-            );
+          // After an even number of toggles the value should equal default,
+          // after an odd number it should be negated
+          const expectedValue = toggleCount % 2 === 0 ? defaultValue : !defaultValue;
+          expect(screen.getByTestId('flag-value').textContent).toBe(String(expectedValue));
 
-            unmount();
-          },
-        ),
+          unmount();
+        }),
         { numRuns: 100 },
       );
     });
@@ -263,9 +241,7 @@ describe('Property 15: Feature Flag Reactivity and Persistence', () => {
             </FeatureFlagProvider>,
           );
 
-          expect(screen.getByTestId('flag-value').textContent).toBe(
-            String(expectedValue),
-          );
+          expect(screen.getByTestId('flag-value').textContent).toBe(String(expectedValue));
 
           unmount();
         }),

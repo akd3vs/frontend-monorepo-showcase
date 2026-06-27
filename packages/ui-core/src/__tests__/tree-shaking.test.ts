@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+
+import { describe, it, expect } from 'vitest';
 
 /**
  * Tree-shaking validation tests for UI_Core.

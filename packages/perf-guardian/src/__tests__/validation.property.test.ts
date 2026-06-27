@@ -4,12 +4,12 @@
  * Feature: enterprise-frontend-monorepo
  * Testing Framework: Vitest + fast-check
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as fc from 'fast-check';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { analyzeBudgets } from '../analyzer.js';
 
-import type { ArtifactReport, BudgetEntry, PerfGuardianOutput } from '../types.js';
+import type { BudgetEntry, PerfGuardianOutput } from '../types.js';
 
 // Mock fast-glob and fs so we can control measured sizes
 vi.mock('fast-glob', () => ({
@@ -107,9 +107,7 @@ describe('Property 10: Budget Validation Correctness', () => {
           // When measured exactly equals threshold, it should pass
           setupMockForSize(thresholdKb);
 
-          const budgets: BudgetEntry[] = [
-            { artifactGlob: 'dist/**/*.js', maxSizeKb: thresholdKb },
-          ];
+          const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: thresholdKb }];
 
           const output = analyzeBudgets(budgets, '/project');
           const report = output.artifacts[0];
@@ -159,28 +157,25 @@ describe('Property 10: Budget Validation Correctness', () => {
 
   it('overall status is pass when all artifacts are within budget', () => {
     fc.assert(
-      fc.property(
-        fc.integer({ min: 1, max: 5 }),
-        (numArtifacts) => {
-          const budgets: BudgetEntry[] = [];
+      fc.property(fc.integer({ min: 1, max: 5 }), (numArtifacts) => {
+        const budgets: BudgetEntry[] = [];
 
-          for (let i = 0; i < numArtifacts; i++) {
-            budgets.push({
-              artifactGlob: `dist/chunk-${i}.js`,
-              maxSizeKb: 100,
-            });
-            // All pass: 50 KB <= 100 KB
-            setupMockForSize(50);
-          }
+        for (let i = 0; i < numArtifacts; i++) {
+          budgets.push({
+            artifactGlob: `dist/chunk-${i}.js`,
+            maxSizeKb: 100,
+          });
+          // All pass: 50 KB <= 100 KB
+          setupMockForSize(50);
+        }
 
-          const output = analyzeBudgets(budgets, '/project');
+        const output = analyzeBudgets(budgets, '/project');
 
-          expect(output.overallStatus).toBe('pass');
-          for (const artifact of output.artifacts) {
-            expect(artifact.status).toBe('pass');
-          }
-        },
-      ),
+        expect(output.overallStatus).toBe('pass');
+        for (const artifact of output.artifacts) {
+          expect(artifact.status).toBe('pass');
+        }
+      }),
       { numRuns: 100 },
     );
   });
@@ -204,8 +199,7 @@ describe('Property 11: JSON Output Completeness', () => {
           fc.record({
             measuredKb: fc.integer({ min: 0, max: 50000 }).map((v) => v / 10),
             thresholdKb: fc.integer({ min: 1, max: 50000 }).map((v) => v / 10),
-            name: fc.string({ minLength: 1, maxLength: 50 })
-              .filter((s) => s.trim().length > 0),
+            name: fc.string({ minLength: 1, maxLength: 50 }).filter((s) => s.trim().length > 0),
           }),
           { minLength: 1, maxLength: 10 },
         ),
@@ -302,8 +296,7 @@ describe('Property 11: JSON Output Completeness', () => {
     fc.assert(
       fc.property(
         fc.array(
-          fc.stringMatching(/^[a-z][a-z0-9/._-]{0,40}\.js$/)
-            .filter((s) => s.length > 3),
+          fc.stringMatching(/^[a-z][a-z0-9/._-]{0,40}\.js$/).filter((s) => s.length > 3),
           { minLength: 1, maxLength: 5 },
         ),
         (globs) => {

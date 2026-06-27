@@ -1,3 +1,3 @@
 import baseConfig from '../../eslint.config.base.mjs';
 
-export default [...baseConfig];
+export default [{ ignores: ['@mf-types/**'] }, ...baseConfig];

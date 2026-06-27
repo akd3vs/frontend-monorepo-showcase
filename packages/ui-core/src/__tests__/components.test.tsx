@@ -1,13 +1,13 @@
-import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { axe } from 'vitest-axe';
 
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
-import { Table } from '../components/Table';
-import { Skeleton } from '../components/Skeleton';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { Skeleton } from '../components/Skeleton';
+import { Table } from '../components/Table';
 
 // ─── Button Component ───────────────────────────────────────────────────────
 
@@ -26,7 +26,11 @@ describe('Button', () => {
 
   it('does not call onClick when disabled', () => {
     const onClick = vi.fn();
-    render(<Button onClick={onClick} disabled>Click</Button>);
+    render(
+      <Button onClick={onClick} disabled>
+        Click
+      </Button>,
+    );
     fireEvent.click(screen.getByRole('button'));
     expect(onClick).not.toHaveBeenCalled();
   });
@@ -85,7 +89,11 @@ describe('Card', () => {
   });
 
   it('uses custom aria-label when provided', () => {
-    render(<Card aria-label="Custom label" title="Title">Content</Card>);
+    render(
+      <Card aria-label="Custom label" title="Title">
+        Content
+      </Card>,
+    );
     expect(screen.getByRole('article').getAttribute('aria-label')).toBe('Custom label');
   });
 
@@ -93,7 +101,7 @@ describe('Card', () => {
     const { container } = render(
       <Card title="Accessible Card" footer={<span>Footer</span>}>
         Card content here
-      </Card>
+      </Card>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -139,7 +147,9 @@ describe('Table', () => {
     const columnsWithRender = [
       { key: 'name', header: 'Name', render: (val: unknown) => `**${val}**` },
     ];
-    render(<Table columns={columnsWithRender} data={[{ name: 'Test' }]} ariaLabel="Custom render" />);
+    render(
+      <Table columns={columnsWithRender} data={[{ name: 'Test' }]} ariaLabel="Custom render" />,
+    );
     expect(screen.getByText('**Test**')).toBeDefined();
   });
 
@@ -157,7 +167,7 @@ describe('Table', () => {
 
   it('passes axe-core accessibility checks', async () => {
     const { container } = render(
-      <Table columns={columns} data={data} ariaLabel="Accessible table" />
+      <Table columns={columns} data={data} ariaLabel="Accessible table" />,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -225,7 +235,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary boundaryId="test-1">
         <div>Content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(screen.getByText('Content')).toBeDefined();
   });
@@ -234,7 +244,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary boundaryId="test-2">
         <ThrowingComponent shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(screen.getByText('Something went wrong')).toBeDefined();
     expect(screen.getByText('Test error')).toBeDefined();
@@ -244,7 +254,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary boundaryId="test-3">
         <ThrowingComponent shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(screen.getByRole('button', { name: /retry/i })).toBeDefined();
     expect(screen.getByRole('button', { name: /reset/i })).toBeDefined();
@@ -256,7 +266,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary boundaryId="boundary-x" onError={onError}>
         <ThrowingComponent shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(onError).toHaveBeenCalledOnce();
     const event = onError.mock.calls[0][0];
@@ -269,7 +279,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary boundaryId="test-alert">
         <ThrowingComponent shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(screen.getByRole('alert')).toBeDefined();
   });
@@ -278,7 +288,7 @@ describe('ErrorBoundary', () => {
     const { container } = render(
       <ErrorBoundary boundaryId="test-a11y">
         <ThrowingComponent shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -288,7 +298,7 @@ describe('ErrorBoundary', () => {
     render(
       <ErrorBoundary boundaryId="test-fallback" fallback={<div>Custom error UI</div>}>
         <ThrowingComponent shouldThrow={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     expect(screen.getByText('Custom error UI')).toBeDefined();
   });

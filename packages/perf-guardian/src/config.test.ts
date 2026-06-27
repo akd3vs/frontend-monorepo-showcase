@@ -1,7 +1,8 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { join } from 'node:path';
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+import { describe, it, expect, afterEach } from 'vitest';
 
 import { parseConfig } from './config.js';
 
@@ -30,7 +31,7 @@ describe('parseConfig', () => {
             { artifactGlob: 'dist/**/*.js', maxSizeKb: 100 },
             { artifactGlob: 'dist/**/*.css', maxSizeKb: 50 },
           ],
-        })
+        }),
       );
 
       const result = parseConfig(configPath);
@@ -60,7 +61,7 @@ describe('parseConfig', () => {
             { library: 'ui-core', maxExpectedSizeKb: 10 },
             { library: 'mock-engine', maxExpectedSizeKb: 25 },
           ],
-        })
+        }),
       );
 
       const result = parseConfig(configPath);
@@ -96,7 +97,7 @@ describe('parseConfig', () => {
         configPath,
         JSON.stringify({
           budgets: [{ artifactGlob: 'dist/**/*.map', maxSizeKb: 0 }],
-        })
+        }),
       );
 
       const result = parseConfig(configPath);
@@ -192,10 +193,7 @@ describe('parseConfig', () => {
     it('should return error when a budget entry is missing artifactGlob', () => {
       const dir = createTempDir();
       const configPath = join(dir, 'config.json');
-      writeFileSync(
-        configPath,
-        JSON.stringify({ budgets: [{ maxSizeKb: 100 }] })
-      );
+      writeFileSync(configPath, JSON.stringify({ budgets: [{ maxSizeKb: 100 }] }));
 
       const result = parseConfig(configPath);
 
@@ -210,7 +208,7 @@ describe('parseConfig', () => {
       const configPath = join(dir, 'config.json');
       writeFileSync(
         configPath,
-        JSON.stringify({ budgets: [{ artifactGlob: 123, maxSizeKb: 100 }] })
+        JSON.stringify({ budgets: [{ artifactGlob: 123, maxSizeKb: 100 }] }),
       );
 
       const result = parseConfig(configPath);
@@ -228,7 +226,7 @@ describe('parseConfig', () => {
         configPath,
         JSON.stringify({
           budgets: [{ artifactGlob: 'dist/**/*.js', maxSizeKb: -1 }],
-        })
+        }),
       );
 
       const result = parseConfig(configPath);
@@ -246,7 +244,7 @@ describe('parseConfig', () => {
         configPath,
         JSON.stringify({
           budgets: [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 'large' }],
-        })
+        }),
       );
 
       const result = parseConfig(configPath);
@@ -265,7 +263,7 @@ describe('parseConfig', () => {
         JSON.stringify({
           budgets: [],
           treeShakingThresholds: 'not-an-array',
-        })
+        }),
       );
 
       const result = parseConfig(configPath);
@@ -284,7 +282,7 @@ describe('parseConfig', () => {
         JSON.stringify({
           budgets: [],
           treeShakingThresholds: [{ library: 42, maxExpectedSizeKb: 10 }],
-        })
+        }),
       );
 
       const result = parseConfig(configPath);
@@ -302,10 +300,8 @@ describe('parseConfig', () => {
         configPath,
         JSON.stringify({
           budgets: [],
-          treeShakingThresholds: [
-            { library: 'ui-core', maxExpectedSizeKb: -5 },
-          ],
-        })
+          treeShakingThresholds: [{ library: 'ui-core', maxExpectedSizeKb: -5 }],
+        }),
       );
 
       const result = parseConfig(configPath);

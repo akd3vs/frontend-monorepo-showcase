@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { axe } from 'vitest-axe';
 
-import StockBalancesView from '../views/StockBalancesView';
 import CurrencyAllocationsView from '../views/CurrencyAllocationsView';
+import StockBalancesView from '../views/StockBalancesView';
 import TransactionLedgerView from '../views/TransactionLedgerView';
 
 // ─── Test utilities ─────────────────────────────────────────────────────────
@@ -23,9 +23,7 @@ function createTestQueryClient() {
 
 function renderWithQuery(ui: React.ReactElement) {
   const queryClient = createTestQueryClient();
-  return render(
-    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
-  );
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
 }
 
 // ─── Mock data ──────────────────────────────────────────────────────────────

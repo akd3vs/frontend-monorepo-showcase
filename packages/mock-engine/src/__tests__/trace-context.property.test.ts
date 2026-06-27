@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
+import { describe, it, expect } from 'vitest';
 
 import {
   generateTraceparent,
@@ -93,19 +93,16 @@ describe('Feature: enterprise-frontend-monorepo, Property 8: Trace Context Heade
 
   it('each invocation produces a unique traceparent (trace-id uniqueness)', () => {
     fc.assert(
-      fc.property(
-        fc.integer({ min: 2, max: 50 }),
-        (count) => {
-          const traceIds = new Set<string>();
-          for (let i = 0; i < count; i++) {
-            const traceparent = generateTraceparent();
-            const traceId = traceparent.split('-')[1];
-            traceIds.add(traceId);
-          }
-          // All generated trace-ids should be unique
-          expect(traceIds.size).toBe(count);
-        },
-      ),
+      fc.property(fc.integer({ min: 2, max: 50 }), (count) => {
+        const traceIds = new Set<string>();
+        for (let i = 0; i < count; i++) {
+          const traceparent = generateTraceparent();
+          const traceId = traceparent.split('-')[1];
+          traceIds.add(traceId);
+        }
+        // All generated trace-ids should be unique
+        expect(traceIds.size).toBe(count);
+      }),
       { numRuns: 100 },
     );
   });
