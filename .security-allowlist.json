@@ -1,0 +1,4 @@
+{
+  "description": "Security advisory allowlist. Add entries to suppress known/accepted vulnerabilities. Each entry: { \"id\": \"<advisory-id>\", \"reason\": \"<justification>\", \"expiresAt\": \"YYYY-MM-DD\" }",
+  "advisories": []
+}

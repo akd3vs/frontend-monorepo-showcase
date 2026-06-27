@@ -1,0 +1,28 @@
+{
+  "name": "@frontend-monorepo-showcase/perf-guardian",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "perf-guardian": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "lint": "eslint .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "minimist": "^1.2.8"
+  },
+  "devDependencies": {
+    "@types/minimist": "^1.2.5"
+  }
+}

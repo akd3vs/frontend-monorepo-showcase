@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@frontend-monorepo-showcase/ui-core": ["./packages/ui-core/src/index.ts"],
+      "@frontend-monorepo-showcase/mock-engine": ["./packages/mock-engine/src/index.ts"],
+      "@frontend-monorepo-showcase/perf-guardian": ["./packages/perf-guardian/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,41 @@
+name: Security Audit
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  workflow_call:
+
+jobs:
+  dependency-audit:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Run npm audit
+        run: node scripts/security-audit.mjs
+
+  sast-scan:
+    name: SAST Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Run SAST scan
+        run: npx eslint -c eslint.config.security.mjs apps/ packages/ --format stylish
+        continue-on-error: false

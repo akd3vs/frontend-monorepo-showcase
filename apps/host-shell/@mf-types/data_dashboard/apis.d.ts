@@ -1,0 +1,3 @@
+
+    export type RemoteKeys = 'data_dashboard/DashboardApp' | 'data_dashboard/StockBalancesView' | 'data_dashboard/CurrencyAllocationsView' | 'data_dashboard/TransactionLedgerView';
+    type PackageType<T> = T extends 'data_dashboard/TransactionLedgerView' ? typeof import('data_dashboard/TransactionLedgerView') :T extends 'data_dashboard/CurrencyAllocationsView' ? typeof import('data_dashboard/CurrencyAllocationsView') :T extends 'data_dashboard/StockBalancesView' ? typeof import('data_dashboard/StockBalancesView') :T extends 'data_dashboard/DashboardApp' ? typeof import('data_dashboard/DashboardApp') :any;

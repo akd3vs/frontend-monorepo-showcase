@@ -1,0 +1,13 @@
+{
+  "name": "@frontend-monorepo-showcase/mock-engine",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "msw": "^2.14.6"
+  }
+}

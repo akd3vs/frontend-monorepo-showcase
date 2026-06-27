@@ -1,0 +1,47 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+deploy
+storybook-static
+
+# Nx
+.nx/cache
+.nx/workspace-data
+
+# Vite
+*.local
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage
+
+# MSW generated service worker (regenerated via `npx msw init public/`)
+apps/host-shell/public/mockServiceWorker.js
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Perf Guardian CI artifact
+perf-results.json
+
+# Playwright
+e2e/test-results
+e2e/playwright-report

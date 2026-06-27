@@ -1,0 +1,7 @@
+dist
+deploy
+node_modules
+.nx
+coverage
+*.lock
+package-lock.json

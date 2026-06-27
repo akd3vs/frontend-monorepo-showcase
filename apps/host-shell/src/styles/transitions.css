@@ -1,0 +1,38 @@
+/* View Transition CSS - cross-fade animation (≤ 300ms) */
+/* Note: view-transition-name declarations for .nav-sidebar and .header-bar
+   are in shell.css alongside their layout styles. */
+
+/* Cross-fade animation for page content */
+::view-transition-old(root) {
+  animation: fade-out 200ms ease-out;
+}
+
+::view-transition-new(root) {
+  animation: fade-in 200ms ease-in;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Keep nav sidebar and header stable (no animation) during transitions */
+::view-transition-old(nav-sidebar),
+::view-transition-new(nav-sidebar),
+::view-transition-old(header-bar),
+::view-transition-new(header-bar) {
+  animation: none;
+}

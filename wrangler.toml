@@ -1,0 +1,5 @@
+name = "frontend-monorepo-showcase"
+pages_build_output_dir = "./deploy"
+
+[build]
+command = "npm ci && npx nx run-many -t build && node scripts/prepare-deploy.mjs"

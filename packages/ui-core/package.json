@@ -1,0 +1,66 @@
+{
+  "name": "@frontend-monorepo-showcase/ui-core",
+  "version": "0.0.1",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs"
+    },
+    "./Button": {
+      "types": "./dist/components/Button/index.d.ts",
+      "import": "./dist/esm/Button.js",
+      "require": "./dist/cjs/Button.cjs"
+    },
+    "./Card": {
+      "types": "./dist/components/Card/index.d.ts",
+      "import": "./dist/esm/Card.js",
+      "require": "./dist/cjs/Card.cjs"
+    },
+    "./Table": {
+      "types": "./dist/components/Table/index.d.ts",
+      "import": "./dist/esm/Table.js",
+      "require": "./dist/cjs/Table.cjs"
+    },
+    "./Skeleton": {
+      "types": "./dist/components/Skeleton/index.d.ts",
+      "import": "./dist/esm/Skeleton.js",
+      "require": "./dist/cjs/Skeleton.cjs"
+    },
+    "./ErrorBoundary": {
+      "types": "./dist/components/ErrorBoundary/index.d.ts",
+      "import": "./dist/esm/ErrorBoundary.js",
+      "require": "./dist/cjs/ErrorBoundary.cjs"
+    },
+    "./theme": {
+      "types": "./dist/theme/index.d.ts",
+      "import": "./dist/esm/theme.js",
+      "require": "./dist/cjs/theme.cjs"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook",
+    "update-baselines": "bash ./scripts/update-baselines.sh"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "*",
+    "@testing-library/jest-dom": "*",
+    "@testing-library/user-event": "*",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "vitest-axe": "*"
+  }
+}

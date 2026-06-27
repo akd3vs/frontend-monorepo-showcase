@@ -1,0 +1,26 @@
+{
+  "budgets": [
+    {
+      "artifactGlob": "apps/host-shell/dist/**/*.js",
+      "maxSizeKb": 500
+    },
+    {
+      "artifactGlob": "apps/data-dashboard/dist/**/*.js",
+      "maxSizeKb": 300
+    },
+    {
+      "artifactGlob": "apps/devtools-panel/dist/**/*.js",
+      "maxSizeKb": 150
+    },
+    {
+      "artifactGlob": "packages/ui-core/dist/**/*.js",
+      "maxSizeKb": 100
+    }
+  ],
+  "treeShakingThresholds": [
+    {
+      "library": "ui-core",
+      "maxExpectedSizeKb": 20
+    }
+  ]
+}

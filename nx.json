@@ -1,0 +1,47 @@
+{
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
+    },
+    "lint": {
+      "cache": true
+    },
+    "test": {
+      "cache": true
+    }
+  },
+  "defaultBase": "main",
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json"]
+  },
+  "release": {
+    "projects": ["apps/*", "packages/*"],
+    "changelog": {
+      "workspaceChangelog": false,
+      "projectChangelogs": {
+        "createRelease": "github",
+        "renderOptions": {
+          "authors": true,
+          "commitReferences": true
+        }
+      }
+    },
+    "version": {
+      "conventionalCommits": true,
+      "generatorOptions": {
+        "fallbackCurrentVersionResolver": "disk"
+      }
+    },
+    "git": {
+      "commit": true,
+      "tag": true
+    }
+  },
+  "analytics": true,
+  "tui": {
+    "enabled": false
+  }
+}
