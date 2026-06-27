@@ -1,3 +1,13 @@
+## 0.0.5 (2026-06-27)
+
+### 🩹 Fixes
+
+- replace \_redirects with \_routes.json for Cloudflare Pages SPA routing ([01a4f41](https://github.com/akd3vs/frontend-monorepo-showcase/commit/01a4f41))
+
+### ❤️ Thank You
+
+- Karell Contreras
+
 ## 0.0.4 (2026-06-27)
 
 ### 🩹 Fixes
