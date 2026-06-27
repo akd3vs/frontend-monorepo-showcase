@@ -59,15 +59,12 @@ export default [
             'Direct outerHTML assignment is a security risk (XSS). Use textContent or a sanitization library.',
         },
         {
-          selector:
-            'CallExpression[callee.object.name="document"][callee.property.name="write"]',
+          selector: 'CallExpression[callee.object.name="document"][callee.property.name="write"]',
           message: 'document.write() is a security risk. Use DOM manipulation methods instead.',
         },
         {
-          selector:
-            'CallExpression[callee.object.name="document"][callee.property.name="writeln"]',
-          message:
-            'document.writeln() is a security risk. Use DOM manipulation methods instead.',
+          selector: 'CallExpression[callee.object.name="document"][callee.property.name="writeln"]',
+          message: 'document.writeln() is a security risk. Use DOM manipulation methods instead.',
         },
       ],
 
@@ -116,15 +113,12 @@ export default [
             'Direct outerHTML assignment is a security risk (XSS). Use textContent or a sanitization library.',
         },
         {
-          selector:
-            'CallExpression[callee.object.name="document"][callee.property.name="write"]',
+          selector: 'CallExpression[callee.object.name="document"][callee.property.name="write"]',
           message: 'document.write() is a security risk. Use DOM manipulation methods instead.',
         },
         {
-          selector:
-            'CallExpression[callee.object.name="document"][callee.property.name="writeln"]',
-          message:
-            'document.writeln() is a security risk. Use DOM manipulation methods instead.',
+          selector: 'CallExpression[callee.object.name="document"][callee.property.name="writeln"]',
+          message: 'document.writeln() is a security risk. Use DOM manipulation methods instead.',
         },
       ],
 
@@ -148,6 +142,9 @@ export default [
       '**/.storybook/**',
       '**/mockServiceWorker.js',
       '**/routeTree.gen.ts',
+      // mock-engine is a test data generator (fake prices, random tickers, simulated latency)
+      // Math.random() is appropriate here — no security context
+      'packages/mock-engine/**',
     ],
   },
 ];
