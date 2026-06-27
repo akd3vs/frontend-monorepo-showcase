@@ -27,11 +27,17 @@ jobs:
 
       - run: npm ci
 
+      - name: Register ESLint problem matcher
+        run: echo "::add-matcher::.github/problem-matchers/eslint.json"
+
+      - name: Register TypeScript problem matcher
+        run: echo "::add-matcher::.github/problem-matchers/tsc.json"
+
       - name: Run ESLint on all workspaces
         run: npx nx run-many -t lint --all
 
       - name: Type check
-        run: npx tsc --noEmit -p tsconfig.base.json
+        run: npx tsc --noEmit -p tsconfig.base.json --pretty false
 
   security-audit:
     name: Security Audit
@@ -71,8 +77,11 @@ jobs:
 
       - run: npm ci
 
+      - name: Register Vitest problem matcher
+        run: echo "::add-matcher::.github/problem-matchers/vitest.json"
+
       - name: Run unit tests for all workspaces
-        run: npx nx run-many -t test --all
+        run: npx nx run-many -t test --all -- --reporter=verbose
 
   build:
     name: Build
