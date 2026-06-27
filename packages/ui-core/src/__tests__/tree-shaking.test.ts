@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
 import { describe, it, expect } from 'vitest';
@@ -9,10 +9,15 @@ import { describe, it, expect } from 'vitest';
  * Verifies that each component is built as an independent chunk,
  * meaning importing a single component does NOT pull in code from
  * other components. This validates the multi-entry Vite library build.
+ *
+ * These tests require the package to be built first (dist/esm/ must exist).
+ * They are skipped when the build output is not present (e.g., in CI test
+ * jobs that run before the build step).
  */
-describe('Tree-shaking: component isolation', () => {
-  const distDir = resolve(__dirname, '../../dist/esm');
+const distDir = resolve(__dirname, '../../dist/esm');
+const distExists = existsSync(distDir);
 
+describe.skipIf(!distExists)('Tree-shaking: component isolation', () => {
   const componentFiles = ['Button.js', 'Card.js', 'Table.js', 'Skeleton.js', 'ErrorBoundary.js'];
 
   it('each component has its own separate ESM bundle file', () => {
