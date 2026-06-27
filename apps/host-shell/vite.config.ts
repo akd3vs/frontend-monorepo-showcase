@@ -46,14 +46,18 @@ export default defineConfig({
           name: 'data_dashboard',
           entry:
             process.env.VITE_DASHBOARD_REMOTE_URL ||
-            `http://localhost:${ports.dataDashboard}/remoteEntry.js`,
+            (process.env.NODE_ENV === 'production'
+              ? '/data-dashboard/remoteEntry.js'
+              : `http://localhost:${ports.dataDashboard}/remoteEntry.js`),
         },
         devtools_panel: {
           type: 'module',
           name: 'devtools_panel',
           entry:
             process.env.VITE_DEVTOOLS_REMOTE_URL ||
-            `http://localhost:${ports.devtoolsPanel}/remoteEntry.js`,
+            (process.env.NODE_ENV === 'production'
+              ? '/devtools-panel/remoteEntry.js'
+              : `http://localhost:${ports.devtoolsPanel}/remoteEntry.js`),
         },
       },
       shared: {
