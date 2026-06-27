@@ -198,10 +198,10 @@ describe('StockBalancesView', () => {
 
     const headers = screen.getAllByRole('columnheader');
     expect(headers).toHaveLength(4);
-    expect(headers[0].textContent).toBe('Ticker');
-    expect(headers[1].textContent).toBe('Quantity');
-    expect(headers[2].textContent).toBe('Current Price');
-    expect(headers[3].textContent).toBe('Total Value');
+    expect(headers[0]!.textContent).toBe('Ticker');
+    expect(headers[1]!.textContent).toBe('Quantity');
+    expect(headers[2]!.textContent).toBe('Current Price');
+    expect(headers[3]!.textContent).toBe('Total Value');
   });
 
   it('passes axe-core accessibility checks in success state', async () => {
@@ -327,9 +327,9 @@ describe('CurrencyAllocationsView', () => {
 
     const headers = screen.getAllByRole('columnheader');
     expect(headers).toHaveLength(3);
-    expect(headers[0].textContent).toBe('Currency');
-    expect(headers[1].textContent).toBe('Allocation');
-    expect(headers[2].textContent).toBe('Value');
+    expect(headers[0]!.textContent).toBe('Currency');
+    expect(headers[1]!.textContent).toBe('Allocation');
+    expect(headers[2]!.textContent).toBe('Value');
   });
 
   it('passes axe-core accessibility checks in success state', async () => {
@@ -464,11 +464,11 @@ describe('TransactionLedgerView', () => {
 
     const headers = screen.getAllByRole('columnheader');
     expect(headers).toHaveLength(5);
-    expect(headers[0].textContent).toBe('Type');
-    expect(headers[1].textContent).toBe('Asset');
-    expect(headers[2].textContent).toBe('Amount');
-    expect(headers[3].textContent).toBe('Timestamp');
-    expect(headers[4].textContent).toBe('Status');
+    expect(headers[0]!.textContent).toBe('Type');
+    expect(headers[1]!.textContent).toBe('Asset');
+    expect(headers[2]!.textContent).toBe('Amount');
+    expect(headers[3]!.textContent).toBe('Timestamp');
+    expect(headers[4]!.textContent).toBe('Status');
   });
 
   it('renders pagination controls', async () => {

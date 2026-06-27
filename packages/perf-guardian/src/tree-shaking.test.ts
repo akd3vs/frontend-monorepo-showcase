@@ -31,9 +31,7 @@ describe('analyzeTreeShaking', () => {
   });
 
   it('should return pass when smallest artifact is under threshold', () => {
-    const thresholds: TreeShakingEntry[] = [
-      { library: 'ui-core', maxExpectedSizeKb: 10 },
-    ];
+    const thresholds: TreeShakingEntry[] = [{ library: 'ui-core', maxExpectedSizeKb: 10 }];
 
     // First call: packages/ui-core/dist/esm/*.js
     mockFgSync.mockReturnValueOnce([
@@ -60,9 +58,7 @@ describe('analyzeTreeShaking', () => {
   });
 
   it('should return fail when smallest artifact exceeds threshold', () => {
-    const thresholds: TreeShakingEntry[] = [
-      { library: 'ui-core', maxExpectedSizeKb: 2 },
-    ];
+    const thresholds: TreeShakingEntry[] = [{ library: 'ui-core', maxExpectedSizeKb: 2 }];
 
     mockFgSync.mockReturnValueOnce([
       '/project/packages/ui-core/dist/esm/Button.js',
@@ -86,16 +82,12 @@ describe('analyzeTreeShaking', () => {
   });
 
   it('should fallback to dist/*.js when dist/esm/ is empty', () => {
-    const thresholds: TreeShakingEntry[] = [
-      { library: 'ui-core', maxExpectedSizeKb: 10 },
-    ];
+    const thresholds: TreeShakingEntry[] = [{ library: 'ui-core', maxExpectedSizeKb: 10 }];
 
     // First call: packages/ui-core/dist/esm/*.js - no files
     mockFgSync.mockReturnValueOnce([]);
     // Second call: packages/ui-core/dist/*.js - has files
-    mockFgSync.mockReturnValueOnce([
-      '/project/packages/ui-core/dist/Button.js',
-    ]);
+    mockFgSync.mockReturnValueOnce(['/project/packages/ui-core/dist/Button.js']);
 
     mockStatSync.mockReturnValueOnce({ size: 2048 }); // 2 KB
 
@@ -112,9 +104,7 @@ describe('analyzeTreeShaking', () => {
   });
 
   it('should handle no artifacts found gracefully', () => {
-    const thresholds: TreeShakingEntry[] = [
-      { library: 'nonexistent-lib', maxExpectedSizeKb: 10 },
-    ];
+    const thresholds: TreeShakingEntry[] = [{ library: 'nonexistent-lib', maxExpectedSizeKb: 10 }];
 
     mockFgSync.mockReturnValueOnce([]); // dist/esm/*.js
     mockFgSync.mockReturnValueOnce([]); // dist/*.js
@@ -138,9 +128,7 @@ describe('analyzeTreeShaking', () => {
     ];
 
     // ui-core
-    mockFgSync.mockReturnValueOnce([
-      '/project/packages/ui-core/dist/esm/Button.js',
-    ]);
+    mockFgSync.mockReturnValueOnce(['/project/packages/ui-core/dist/esm/Button.js']);
     // mock-engine
     mockFgSync.mockReturnValueOnce([
       '/project/packages/mock-engine/dist/esm/handlers.js',
@@ -155,24 +143,20 @@ describe('analyzeTreeShaking', () => {
     const results = analyzeTreeShaking(thresholds, '/project');
 
     expect(results).toHaveLength(2);
-    expect(results[0].status).toBe('pass');
-    expect(results[0].measuredSizeKb).toBe(4);
-    expect(results[1].status).toBe('pass');
-    expect(results[1].measuredSizeKb).toBe(10);
+    expect(results[0]!.status).toBe('pass');
+    expect(results[0]!.measuredSizeKb).toBe(4);
+    expect(results[1]!.status).toBe('pass');
+    expect(results[1]!.measuredSizeKb).toBe(10);
   });
 
   it('should produce correct JSON output shape per spec', () => {
-    const thresholds: TreeShakingEntry[] = [
-      { library: 'ui-core', maxExpectedSizeKb: 3 },
-    ];
+    const thresholds: TreeShakingEntry[] = [{ library: 'ui-core', maxExpectedSizeKb: 3 }];
 
-    mockFgSync.mockReturnValueOnce([
-      '/project/packages/ui-core/dist/esm/Button.js',
-    ]);
+    mockFgSync.mockReturnValueOnce(['/project/packages/ui-core/dist/esm/Button.js']);
     mockStatSync.mockReturnValueOnce({ size: 5120 }); // 5 KB
 
     const results = analyzeTreeShaking(thresholds, '/project');
-    const report = results[0];
+    const report = results[0]!;
 
     // Validate all required fields exist per spec: name, measuredSizeKb, budgetThresholdKb, status, overageKb
     expect(report).toHaveProperty('name');
@@ -187,10 +171,8 @@ describe('analyzeTreeShaking', () => {
     expect(report.overageKb).toBe(2);
   });
 
-  it('should skip files that cannot be stat\'d', () => {
-    const thresholds: TreeShakingEntry[] = [
-      { library: 'ui-core', maxExpectedSizeKb: 10 },
-    ];
+  it("should skip files that cannot be stat'd", () => {
+    const thresholds: TreeShakingEntry[] = [{ library: 'ui-core', maxExpectedSizeKb: 10 }];
 
     mockFgSync.mockReturnValueOnce([
       '/project/packages/ui-core/dist/esm/Button.js',
@@ -205,7 +187,7 @@ describe('analyzeTreeShaking', () => {
 
     const results = analyzeTreeShaking(thresholds, '/project');
 
-    expect(results[0].measuredSizeKb).toBe(2);
-    expect(results[0].status).toBe('pass');
+    expect(results[0]!.measuredSizeKb).toBe(2);
+    expect(results[0]!.status).toBe('pass');
   });
 });

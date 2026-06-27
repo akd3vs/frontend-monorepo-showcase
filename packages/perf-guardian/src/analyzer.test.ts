@@ -32,9 +32,7 @@ describe('analyzeBudgets', () => {
 
   describe('budget pass/fail logic', () => {
     it('should pass when measured size equals threshold exactly', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 10 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 10 }];
 
       mockFgSync.mockReturnValueOnce(['/project/dist/main.js']);
       // 10 KB exactly = 10240 bytes
@@ -42,15 +40,13 @@ describe('analyzeBudgets', () => {
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].status).toBe('pass');
-      expect(output.artifacts[0].overageKb).toBeNull();
+      expect(output.artifacts[0]!.status).toBe('pass');
+      expect(output.artifacts[0]!.overageKb).toBeNull();
       expect(output.overallStatus).toBe('pass');
     });
 
     it('should pass when measured size is below threshold', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 100 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 100 }];
 
       mockFgSync.mockReturnValueOnce(['/project/dist/app.js']);
       // 50 KB = 51200 bytes
@@ -58,15 +54,13 @@ describe('analyzeBudgets', () => {
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].status).toBe('pass');
-      expect(output.artifacts[0].measuredSizeKb).toBe(50);
-      expect(output.artifacts[0].overageKb).toBeNull();
+      expect(output.artifacts[0]!.status).toBe('pass');
+      expect(output.artifacts[0]!.measuredSizeKb).toBe(50);
+      expect(output.artifacts[0]!.overageKb).toBeNull();
     });
 
     it('should fail when measured size exceeds threshold', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 50 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 50 }];
 
       mockFgSync.mockReturnValueOnce(['/project/dist/bundle.js']);
       // 75 KB = 76800 bytes
@@ -74,16 +68,14 @@ describe('analyzeBudgets', () => {
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].status).toBe('fail');
-      expect(output.artifacts[0].measuredSizeKb).toBe(75);
-      expect(output.artifacts[0].overageKb).toBe(25);
+      expect(output.artifacts[0]!.status).toBe('fail');
+      expect(output.artifacts[0]!.measuredSizeKb).toBe(75);
+      expect(output.artifacts[0]!.overageKb).toBe(25);
       expect(output.overallStatus).toBe('fail');
     });
 
     it('should compute overage with 1 decimal precision', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 10 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 10 }];
 
       mockFgSync.mockReturnValueOnce(['/project/dist/main.js']);
       // 10.7 KB = 10.7 * 1024 = 10956.8 bytes
@@ -91,15 +83,13 @@ describe('analyzeBudgets', () => {
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].status).toBe('fail');
-      expect(output.artifacts[0].measuredSizeKb).toBe(10.7);
-      expect(output.artifacts[0].overageKb).toBe(0.7);
+      expect(output.artifacts[0]!.status).toBe('fail');
+      expect(output.artifacts[0]!.measuredSizeKb).toBe(10.7);
+      expect(output.artifacts[0]!.overageKb).toBe(0.7);
     });
 
     it('should sum multiple files matching the same glob', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 20 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 20 }];
 
       mockFgSync.mockReturnValueOnce([
         '/project/dist/chunk-a.js',
@@ -114,34 +104,27 @@ describe('analyzeBudgets', () => {
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].measuredSizeKb).toBe(23);
-      expect(output.artifacts[0].status).toBe('fail');
-      expect(output.artifacts[0].overageKb).toBe(3);
+      expect(output.artifacts[0]!.measuredSizeKb).toBe(23);
+      expect(output.artifacts[0]!.status).toBe('fail');
+      expect(output.artifacts[0]!.overageKb).toBe(3);
     });
 
     it('should report 0 KB when no files match the glob', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 50 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 50 }];
 
       mockFgSync.mockReturnValueOnce([]);
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].measuredSizeKb).toBe(0);
-      expect(output.artifacts[0].status).toBe('pass');
-      expect(output.artifacts[0].overageKb).toBeNull();
+      expect(output.artifacts[0]!.measuredSizeKb).toBe(0);
+      expect(output.artifacts[0]!.status).toBe('pass');
+      expect(output.artifacts[0]!.overageKb).toBeNull();
     });
 
-    it('should skip files that cannot be stat\'d without crashing', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 20 },
-      ];
+    it("should skip files that cannot be stat'd without crashing", () => {
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 20 }];
 
-      mockFgSync.mockReturnValueOnce([
-        '/project/dist/good.js',
-        '/project/dist/broken.js',
-      ]);
+      mockFgSync.mockReturnValueOnce(['/project/dist/good.js', '/project/dist/broken.js']);
       mockStatSync
         .mockReturnValueOnce({ size: 5120 }) // 5 KB
         .mockImplementationOnce(() => {
@@ -150,8 +133,8 @@ describe('analyzeBudgets', () => {
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].measuredSizeKb).toBe(5);
-      expect(output.artifacts[0].status).toBe('pass');
+      expect(output.artifacts[0]!.measuredSizeKb).toBe(5);
+      expect(output.artifacts[0]!.status).toBe('pass');
     });
   });
 
@@ -174,9 +157,9 @@ describe('analyzeBudgets', () => {
       const output = analyzeBudgets(budgets, '/project');
 
       expect(output.artifacts).toHaveLength(2);
-      expect(output.artifacts[0].status).toBe('pass'); // 50 <= 100
-      expect(output.artifacts[1].status).toBe('fail'); // 40 > 30
-      expect(output.artifacts[1].overageKb).toBe(10);
+      expect(output.artifacts[0]!.status).toBe('pass'); // 50 <= 100
+      expect(output.artifacts[1]!.status).toBe('fail'); // 40 > 30
+      expect(output.artifacts[1]!.overageKb).toBe(10);
     });
 
     it('should set overallStatus to fail if any artifact fails', () => {
@@ -199,9 +182,9 @@ describe('analyzeBudgets', () => {
       const output = analyzeBudgets(budgets, '/project');
 
       expect(output.overallStatus).toBe('fail');
-      expect(output.artifacts[0].status).toBe('pass');
-      expect(output.artifacts[1].status).toBe('fail');
-      expect(output.artifacts[2].status).toBe('pass');
+      expect(output.artifacts[0]!.status).toBe('pass');
+      expect(output.artifacts[1]!.status).toBe('fail');
+      expect(output.artifacts[2]!.status).toBe('pass');
     });
 
     it('should set overallStatus to pass if all artifacts pass', () => {
@@ -226,9 +209,7 @@ describe('analyzeBudgets', () => {
 
   describe('output structure', () => {
     it('should include a valid ISO 8601 timestamp', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 100 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 100 }];
 
       mockFgSync.mockReturnValueOnce([]);
 
@@ -241,15 +222,13 @@ describe('analyzeBudgets', () => {
     });
 
     it('should populate all required fields in each artifact report', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 50 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 50 }];
 
       mockFgSync.mockReturnValueOnce(['/project/dist/app.js']);
       mockStatSync.mockReturnValueOnce({ size: 61440 }); // 60 KB
 
       const output = analyzeBudgets(budgets, '/project');
-      const artifact = output.artifacts[0];
+      const artifact = output.artifacts[0]!;
 
       expect(artifact.name).toBe('dist/**/*.js');
       expect(artifact.measuredSizeKb).toBe(60);
@@ -259,16 +238,14 @@ describe('analyzeBudgets', () => {
     });
 
     it('should set overageKb to null for passing artifacts', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 100 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 100 }];
 
       mockFgSync.mockReturnValueOnce(['/project/dist/app.js']);
       mockStatSync.mockReturnValueOnce({ size: 10240 }); // 10 KB
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].overageKb).toBeNull();
+      expect(output.artifacts[0]!.overageKb).toBeNull();
     });
 
     it('should use the artifact glob as the name', () => {
@@ -280,7 +257,7 @@ describe('analyzeBudgets', () => {
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].name).toBe('apps/host-shell/dist/**/*.js');
+      expect(output.artifacts[0]!.name).toBe('apps/host-shell/dist/**/*.js');
     });
   });
 
@@ -293,9 +270,7 @@ describe('analyzeBudgets', () => {
     });
 
     it('should handle very small files (< 0.1 KB) rounding to 0', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 1 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 1 }];
 
       mockFgSync.mockReturnValueOnce(['/project/dist/tiny.js']);
       // 10 bytes ≈ 0.0097... KB, rounds to 0.0
@@ -303,22 +278,20 @@ describe('analyzeBudgets', () => {
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].measuredSizeKb).toBe(0);
-      expect(output.artifacts[0].status).toBe('pass');
+      expect(output.artifacts[0]!.measuredSizeKb).toBe(0);
+      expect(output.artifacts[0]!.status).toBe('pass');
     });
 
     it('should handle budget threshold of 0', () => {
-      const budgets: BudgetEntry[] = [
-        { artifactGlob: 'dist/**/*.js', maxSizeKb: 0 },
-      ];
+      const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: 0 }];
 
       mockFgSync.mockReturnValueOnce(['/project/dist/app.js']);
       mockStatSync.mockReturnValueOnce({ size: 1024 }); // 1 KB
 
       const output = analyzeBudgets(budgets, '/project');
 
-      expect(output.artifacts[0].status).toBe('fail');
-      expect(output.artifacts[0].overageKb).toBe(1);
+      expect(output.artifacts[0]!.status).toBe('fail');
+      expect(output.artifacts[0]!.overageKb).toBe(1);
     });
   });
 });

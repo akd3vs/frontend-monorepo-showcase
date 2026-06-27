@@ -130,17 +130,17 @@ describe('Table', () => {
     render(<Table columns={columns} data={data} ariaLabel="Test table" />);
     const headers = screen.getAllByRole('columnheader');
     expect(headers).toHaveLength(2);
-    expect(headers[0].textContent).toBe('Name');
-    expect(headers[1].textContent).toBe('Value');
-    expect(headers[0].getAttribute('scope')).toBe('col');
+    expect(headers[0]!.textContent).toBe('Name');
+    expect(headers[1]!.textContent).toBe('Value');
+    expect(headers[0]!.getAttribute('scope')).toBe('col');
   });
 
   it('renders data rows', () => {
     render(<Table columns={columns} data={data} ariaLabel="Test table" />);
     const cells = screen.getAllByRole('cell');
     expect(cells).toHaveLength(4);
-    expect(cells[0].textContent).toBe('Alice');
-    expect(cells[1].textContent).toBe('100');
+    expect(cells[0]!.textContent).toBe('Alice');
+    expect(cells[1]!.textContent).toBe('100');
   });
 
   it('renders custom cell content via render function', () => {
@@ -269,7 +269,7 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>,
     );
     expect(onError).toHaveBeenCalledOnce();
-    const event = onError.mock.calls[0][0];
+    const event = onError.mock.calls[0]![0];
     expect(event.errorMessage).toBe('Test error');
     expect(event.boundaryId).toBe('boundary-x');
     expect(event.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T/);

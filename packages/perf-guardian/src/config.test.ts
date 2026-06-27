@@ -104,7 +104,7 @@ describe('parseConfig', () => {
 
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.config.budgets[0].maxSizeKb).toBe(0);
+        expect(result.config.budgets[0]!.maxSizeKb).toBe(0);
       }
     });
   });

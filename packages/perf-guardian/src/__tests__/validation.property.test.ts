@@ -75,7 +75,7 @@ describe('Property 10: Budget Validation Correctness', () => {
           ];
 
           const output = analyzeBudgets(budgets, '/project');
-          const report = output.artifacts[0];
+          const report = output.artifacts[0]!;
 
           // The measured size after rounding through bytes→KB conversion
           // may differ slightly from our input due to byte rounding, so
@@ -110,7 +110,7 @@ describe('Property 10: Budget Validation Correctness', () => {
           const budgets: BudgetEntry[] = [{ artifactGlob: 'dist/**/*.js', maxSizeKb: thresholdKb }];
 
           const output = analyzeBudgets(budgets, '/project');
-          const report = output.artifacts[0];
+          const report = output.artifacts[0]!;
 
           expect(report.status).toBe('pass');
           expect(report.overageKb).toBeNull();
@@ -148,7 +148,7 @@ describe('Property 10: Budget Validation Correctness', () => {
           const output = analyzeBudgets(budgets, '/project');
 
           expect(output.overallStatus).toBe('fail');
-          expect(output.artifacts[actualFailIdx].status).toBe('fail');
+          expect(output.artifacts[actualFailIdx]!.status).toBe('fail');
         },
       ),
       { numRuns: 100 },
@@ -313,7 +313,7 @@ describe('Property 11: JSON Output Completeness', () => {
 
           // Each artifact name should match its corresponding glob
           for (let i = 0; i < globs.length; i++) {
-            expect(output.artifacts[i].name).toBe(globs[i]);
+            expect(output.artifacts[i]!.name).toBe(globs[i]);
           }
         },
       ),

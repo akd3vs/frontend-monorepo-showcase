@@ -97,7 +97,7 @@ describe('Feature: enterprise-frontend-monorepo, Property 8: Trace Context Heade
         const traceIds = new Set<string>();
         for (let i = 0; i < count; i++) {
           const traceparent = generateTraceparent();
-          const traceId = traceparent.split('-')[1];
+          const traceId = traceparent.split('-')[1]!;
           traceIds.add(traceId);
         }
         // All generated trace-ids should be unique

@@ -315,7 +315,7 @@ describe('Property 5: GraphQL Response Schema Conformance', () => {
           const obj: Record<string, unknown> = {};
           for (const field of requestedFields) {
             if (field in b) {
-              obj[field] = (b as Record<string, unknown>)[field];
+              obj[field] = (b as unknown as Record<string, unknown>)[field];
             }
           }
           return obj;
@@ -349,7 +349,7 @@ describe('Property 5: GraphQL Response Schema Conformance', () => {
           const obj: Record<string, unknown> = {};
           for (const field of requestedFields) {
             if (field in a) {
-              obj[field] = (a as Record<string, unknown>)[field];
+              obj[field] = (a as unknown as Record<string, unknown>)[field];
             }
           }
           return obj;
@@ -377,7 +377,7 @@ describe('Property 5: GraphQL Response Schema Conformance', () => {
           const obj: Record<string, unknown> = {};
           for (const field of requestedFields) {
             if (field in t) {
-              obj[field] = (t as Record<string, unknown>)[field];
+              obj[field] = (t as unknown as Record<string, unknown>)[field];
             }
           }
           return obj;
