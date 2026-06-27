@@ -20,6 +20,7 @@
   "release": {
     "projects": ["apps/*", "packages/*"],
     "changelog": {
+      "automaticFromRef": true,
       "workspaceChangelog": false,
       "projectChangelogs": {
         "createRelease": "github",
