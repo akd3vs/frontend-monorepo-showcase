@@ -31,9 +31,7 @@
     },
     "version": {
       "conventionalCommits": true,
-      "generatorOptions": {
-        "fallbackCurrentVersionResolver": "disk"
-      }
+      "fallbackCurrentVersionResolver": "disk"
     },
     "git": {
       "commit": true,
