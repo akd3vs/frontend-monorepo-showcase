@@ -1,0 +1,63 @@
+{
+  "name": "frontend-monorepo-showcase",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "nx run-many -t dev --projects=@frontend-monorepo-showcase/host-shell,@frontend-monorepo-showcase/data-dashboard,@frontend-monorepo-showcase/devtools-panel --parallel=3",
+    "build": "nx run-many -t build",
+    "lint": "nx run-many -t lint",
+    "test": "nx run-many -t test",
+    "security:audit": "node scripts/security-audit.mjs",
+    "security:sast": "eslint -c eslint.config.security.mjs apps/ packages/",
+    "security": "npm run security:audit && npm run security:sast",
+    "e2e": "npx playwright test --config=e2e/playwright.config.ts",
+    "e2e:ui": "npx playwright test --config=e2e/playwright.config.ts --ui",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@playwright/test": "1.61.1",
+    "@storybook/react": "10.4.6",
+    "@storybook/react-vite": "10.4.6",
+    "@storybook/test-runner": "0.24.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/jest-image-snapshot": "6.4.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "eslint": "^9.28.0",
+    "eslint-plugin-import-x": "4.12.2",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "fast-check": "^4.8.0",
+    "husky": "^9.1.7",
+    "jest-image-snapshot": "6.5.0",
+    "jsdom": "^29.1.1",
+    "lint-staged": "^15.5.1",
+    "nx": "^23.0.0",
+    "prettier": "^3.8.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "storybook": "10.4.6",
+    "typescript": "^6.0.0",
+    "typescript-eslint": "^8.33.0",
+    "vite": "^8.1.0",
+    "vite-plugin-dts": "^5.0.3",
+    "vitest": "^4.1.9",
+    "vitest-axe": "^0.1.0"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "apps/host-shell/public"
+    ]
+  }
+}
