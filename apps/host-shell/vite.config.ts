@@ -10,7 +10,7 @@ import { ports } from '../../ports.config';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   server: {
     port: ports.hostShell,
     host: true,
@@ -20,18 +20,16 @@ export default defineConfig({
   },
   resolve: {
     alias:
-      process.env.NODE_ENV === 'development'
-        ? {
-            '@frontend-monorepo-showcase/ui-core': path.resolve(
-              __dirname,
-              '../../packages/ui-core/src',
-            ),
-            '@frontend-monorepo-showcase/mock-engine': path.resolve(
-              __dirname,
-              '../../packages/mock-engine/src',
-            ),
-          }
-        : {},
+      mode !== 'production'
+        ? [
+            { find: '@frontend-monorepo-showcase/design-tokens/css/layers', replacement: path.resolve(__dirname, '../../packages/design-tokens/src/layers.css') },
+            { find: '@frontend-monorepo-showcase/design-tokens/css/dark', replacement: path.resolve(__dirname, '../../packages/design-tokens/src/dark.css') },
+            { find: '@frontend-monorepo-showcase/design-tokens/css', replacement: path.resolve(__dirname, '../../packages/design-tokens/src/tokens.css') },
+            { find: '@frontend-monorepo-showcase/design-tokens', replacement: path.resolve(__dirname, '../../packages/design-tokens/src') },
+            { find: '@frontend-monorepo-showcase/ui-core', replacement: path.resolve(__dirname, '../../packages/ui-core/src') },
+            { find: '@frontend-monorepo-showcase/mock-engine', replacement: path.resolve(__dirname, '../../packages/mock-engine/src') },
+          ]
+        : [],
   },
   plugins: [
     TanStackRouterVite({
@@ -46,7 +44,7 @@ export default defineConfig({
           name: 'data_dashboard',
           entry:
             process.env.VITE_DASHBOARD_REMOTE_URL ||
-            (process.env.NODE_ENV === 'production'
+            (mode === 'production'
               ? '/data-dashboard/remoteEntry.js'
               : `http://localhost:${ports.dataDashboard}/remoteEntry.js`),
         },
@@ -55,7 +53,7 @@ export default defineConfig({
           name: 'devtools_panel',
           entry:
             process.env.VITE_DEVTOOLS_REMOTE_URL ||
-            (process.env.NODE_ENV === 'production'
+            (mode === 'production'
               ? '/devtools-panel/remoteEntry.js'
               : `http://localhost:${ports.devtoolsPanel}/remoteEntry.js`),
         },
@@ -68,4 +66,4 @@ export default defineConfig({
     }),
     react(),
   ],
-});
+}));

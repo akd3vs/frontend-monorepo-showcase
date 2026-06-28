@@ -16,12 +16,16 @@
     "security": "npm run security:audit && npm run security:sast",
     "e2e": "npx playwright test --config=e2e/playwright.config.ts",
     "e2e:ui": "npx playwright test --config=e2e/playwright.config.ts --ui",
+    "e2e:desktop": "npx playwright test --config=e2e/playwright.config.ts --project=desktop-chromium",
+    "e2e:mobile": "npx playwright test --config=e2e/playwright.config.ts --project=mobile-chromium",
     "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@nx/js": "^23.0.1",
     "@playwright/test": "1.61.1",
+    "@storybook/addon-a11y": "10.4.6",
+    "@storybook/addon-docs": "10.4.6",
     "@storybook/react": "10.4.6",
     "@storybook/react-vite": "10.4.6",
     "@storybook/test-runner": "0.24.4",

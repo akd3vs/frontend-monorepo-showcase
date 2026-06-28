@@ -1,0 +1,149 @@
+@layer components {
+  .container {
+    padding: var(--spacing-xl, 24px);
+    border: 1px solid var(--color-error-200, #fecaca);
+    border-radius: 8px;
+    background-color: var(--color-error-50, #fef2f2);
+    font-family: var(--font-family-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    text-align: center;
+  }
+
+  .containerEscalated {
+    padding: var(--spacing-2xl, 32px);
+    border: 2px solid var(--color-error-400, #f87171);
+    border-radius: 8px;
+    background-color: var(--color-error-50, #fef2f2);
+    font-family: var(--font-family-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    text-align: center;
+  }
+
+  .title {
+    font-size: var(--font-size-lg, 1.125rem);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--color-error-800, #991b1b);
+    margin: 0 0 var(--spacing-sm, 8px) 0;
+  }
+
+  .titleEscalated {
+    font-size: var(--font-size-xl, 1.25rem);
+    font-weight: var(--font-weight-bold, 700);
+    color: var(--color-error-900, #7f1d1d);
+    margin: 0 0 var(--spacing-sm, 8px) 0;
+  }
+
+  .message {
+    font-size: var(--font-size-sm, 0.875rem);
+    color: var(--color-error-700, #b91c1c);
+    margin: 0 0 var(--spacing-lg, 16px) 0;
+  }
+
+  .messageEscalated {
+    font-size: var(--font-size-base, 1rem);
+    color: var(--color-error-800, #991b1b);
+    margin: 0 0 var(--spacing-lg, 16px) 0;
+  }
+
+  .buttonContainer {
+    display: flex;
+    gap: var(--spacing-sm, 8px);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .buttonBase {
+    padding: var(--spacing-sm, 8px) var(--spacing-lg, 16px);
+    border-radius: 6px;
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: var(--font-weight-medium, 500);
+    font-family: var(--font-family-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: box-shadow 150ms ease;
+  }
+
+  .retryButton {
+    background-color: var(--color-primary-600, #2563eb);
+    color: var(--color-text-inverse, #ffffff);
+  }
+
+  .resetButton {
+    background-color: transparent;
+    color: var(--color-primary-700, #1d4ed8);
+    border: 1px solid var(--color-primary-600, #2563eb);
+  }
+
+  .navigateButton {
+    background-color: transparent;
+    color: var(--color-text-secondary, #4b5563);
+    border: 1px solid var(--color-neutral-300, #d4d4d4);
+  }
+
+  .reloadButton {
+    padding: var(--spacing-md, 12px) var(--spacing-2xl, 32px);
+    border-radius: 6px;
+    font-size: var(--font-size-base, 1rem);
+    font-weight: var(--font-weight-semibold, 600);
+    font-family: var(--font-family-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background-color: var(--color-error-600, #dc2626);
+    color: var(--color-text-inverse, #ffffff);
+    transition: box-shadow 150ms ease;
+  }
+
+  .buttonBase:focus-visible,
+  .reloadButton:focus-visible {
+    box-shadow: 0 0 0 3px var(--color-primary-300, #93c5fd);
+  }
+}
+
+@layer variants {
+  @media (prefers-contrast: more) {
+    .container {
+      border-width: 2px;
+      border-color: var(--color-error-700, #b91c1c);
+    }
+
+    .containerEscalated {
+      border-width: 3px;
+      border-color: var(--color-error-900, #7f1d1d);
+    }
+
+    .buttonBase:focus-visible,
+    .reloadButton:focus-visible {
+      box-shadow: 0 0 0 3px currentColor;
+      outline: 2px solid transparent;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .container,
+    .containerEscalated {
+      border: 2px solid CanvasText;
+      background-color: Canvas;
+      color: CanvasText;
+    }
+
+    .title,
+    .titleEscalated,
+    .message,
+    .messageEscalated {
+      color: CanvasText;
+    }
+
+    .buttonBase,
+    .reloadButton {
+      border: 1px solid ButtonText;
+      background-color: ButtonFace;
+      color: ButtonText;
+    }
+
+    .buttonBase:focus-visible,
+    .reloadButton:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+  }
+}

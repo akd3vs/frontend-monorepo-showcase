@@ -1,0 +1,28 @@
+@layer variants {
+  @media (prefers-contrast: more) {
+    :root {
+      /* Increase contrast by using more extreme shade values */
+      --color-text-primary: #000000;
+      --color-text-secondary: #1f2937;
+      --color-background: #ffffff;
+      --color-surface: #ffffff;
+    }
+
+    [data-theme="dark"] {
+      --color-text-primary: #ffffff;
+      --color-text-secondary: #e2e8f0;
+      --color-background: #000000;
+      --color-surface: #0f172a;
+    }
+  }
+
+  @media (forced-colors: active) {
+    :root {
+      /* Let the user agent handle colors in forced-colors mode */
+      --color-text-primary: CanvasText;
+      --color-text-secondary: CanvasText;
+      --color-background: Canvas;
+      --color-surface: Canvas;
+    }
+  }
+}

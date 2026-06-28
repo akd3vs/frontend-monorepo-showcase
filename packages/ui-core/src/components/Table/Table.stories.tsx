@@ -1,4 +1,6 @@
-import { Table } from './index';
+import React from 'react';
+
+import { Table, TableLegacy } from './index';
 
 import type { TableColumn } from './index';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -20,15 +22,17 @@ const sampleData: Row[] = [
   { id: 5, name: 'Eve Davis', email: 'eve@example.com', role: 'Admin' },
 ];
 
-const meta: Meta<typeof Table> = {
+const meta: Meta<typeof TableLegacy> = {
   title: 'Components/Table',
-  component: Table,
+  component: TableLegacy,
 };
 
 export default meta;
-type Story = StoryObj<typeof Table>;
+type Story = StoryObj<typeof TableLegacy>;
 
-export const BasicTable: Story = {
+// ─── Populated Table ─────────────────────────────────────────────────────────
+
+export const Populated: Story = {
   args: {
     columns: sampleColumns,
     data: sampleData,
@@ -36,13 +40,17 @@ export const BasicTable: Story = {
   },
 };
 
-export const EmptyTable: Story = {
+// ─── Empty Table ─────────────────────────────────────────────────────────────
+
+export const Empty: Story = {
   args: {
     columns: sampleColumns,
     data: [],
     ariaLabel: 'Empty user list',
   },
 };
+
+// ─── Wide Table with Many Columns ────────────────────────────────────────────
 
 const manyColumns: TableColumn<Row>[] = [
   { key: 'ticker', header: 'Ticker' },
@@ -67,4 +75,32 @@ export const ManyColumns: Story = {
     data: wideData,
     ariaLabel: 'Stock portfolio with many columns',
   },
+};
+
+// ─── Compound API ────────────────────────────────────────────────────────────
+
+export const CompoundAPI: StoryObj<typeof Table> = {
+  render: () => (
+    <Table ariaLabel="Team members">
+      <Table.Header>
+        <Table.Row>
+          <Table.Cell header>Name</Table.Cell>
+          <Table.Cell header>Role</Table.Cell>
+          <Table.Cell header>Status</Table.Cell>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        <Table.Row>
+          <Table.Cell>Alice</Table.Cell>
+          <Table.Cell>Engineer</Table.Cell>
+          <Table.Cell>Active</Table.Cell>
+        </Table.Row>
+        <Table.Row>
+          <Table.Cell>Bob</Table.Cell>
+          <Table.Cell>Designer</Table.Cell>
+          <Table.Cell>On Leave</Table.Cell>
+        </Table.Row>
+      </Table.Body>
+    </Table>
+  ),
 };

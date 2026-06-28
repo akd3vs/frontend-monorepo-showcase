@@ -6,12 +6,7 @@ import { test, expect } from '@playwright/test';
  * Validates Requirements: 2.1, 2.3, 2.4, 2.5, 10.1, 10.4
  */
 test.describe('Navigation', () => {
-  test.describe('Desktop navigation', () => {
-    test.beforeEach(async ({}, testInfo) => {
-      if (testInfo.project.name === 'mobile-chromium') {
-        test.skip();
-      }
-    });
+  test.describe('Desktop navigation @desktop', () => {
 
     test('navigates between all routes via sidebar links', async ({ page }) => {
       await page.goto('/portfolio');
@@ -20,10 +15,28 @@ test.describe('Navigation', () => {
       const portfolioLink = page.locator('.nav-sidebar__link--active');
       await expect(portfolioLink).toContainText('Portfolio');
 
+      // Wait for portfolio data to load
+      await expect(
+        page
+          .locator(
+            '[data-testid="stock-balances-view"], [data-testid="stock-balances-error"]',
+          )
+          .first(),
+      ).toBeVisible({ timeout: 30_000 });
+
       // Navigate to Currencies
       await page.locator('.nav-sidebar').getByText('Currencies').click();
       await page.waitForURL('**/currencies');
       await expect(page.locator('.shell-main h1')).toHaveText('Currencies');
+
+      // Wait for currencies data to load
+      await expect(
+        page
+          .locator(
+            '[data-testid="currency-allocations-view"], [data-testid="currency-allocations-error"]',
+          )
+          .first(),
+      ).toBeVisible({ timeout: 30_000 });
 
       // Currencies link should now be active
       const currenciesLink = page.locator('.nav-sidebar__link--active');
@@ -34,6 +47,15 @@ test.describe('Navigation', () => {
       await page.waitForURL('**/transactions');
       await expect(page.locator('.shell-main h1')).toHaveText('Transactions');
 
+      // Wait for transactions data to load
+      await expect(
+        page
+          .locator(
+            '[data-testid="transaction-ledger-view"], [data-testid="transaction-ledger-error"]',
+          )
+          .first(),
+      ).toBeVisible({ timeout: 30_000 });
+
       // Transactions link should now be active
       const transactionsLink = page.locator('.nav-sidebar__link--active');
       await expect(transactionsLink).toContainText('Transactions');
@@ -42,6 +64,15 @@ test.describe('Navigation', () => {
       await page.locator('.nav-sidebar').getByText('Portfolio').click();
       await page.waitForURL('**/portfolio');
       await expect(page.locator('.shell-main h1')).toHaveText('Portfolio');
+
+      // Wait for portfolio data to load
+      await expect(
+        page
+          .locator(
+            '[data-testid="stock-balances-view"], [data-testid="stock-balances-error"]',
+          )
+          .first(),
+      ).toBeVisible({ timeout: 30_000 });
     });
 
     test('highlights the active navigation item', async ({ page }) => {
@@ -71,12 +102,7 @@ test.describe('Navigation', () => {
     });
   });
 
-  test.describe('Mobile navigation', () => {
-    test.beforeEach(async ({}, testInfo) => {
-      if (testInfo.project.name !== 'mobile-chromium') {
-        test.skip();
-      }
-    });
+  test.describe('Mobile navigation @mobile', () => {
 
     test('navigates between routes via bottom bar', async ({ page }) => {
       await page.goto('/portfolio');

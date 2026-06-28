@@ -9,21 +9,19 @@ import { ports } from '../../ports.config';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   resolve: {
     alias:
-      process.env.NODE_ENV === 'development'
-        ? {
-            '@frontend-monorepo-showcase/ui-core': path.resolve(
-              __dirname,
-              '../../packages/ui-core/src',
-            ),
-            '@frontend-monorepo-showcase/mock-engine': path.resolve(
-              __dirname,
-              '../../packages/mock-engine/src',
-            ),
-          }
-        : {},
+      mode !== 'production'
+        ? [
+            { find: '@frontend-monorepo-showcase/design-tokens/css/layers', replacement: path.resolve(__dirname, '../../packages/design-tokens/src/layers.css') },
+            { find: '@frontend-monorepo-showcase/design-tokens/css/dark', replacement: path.resolve(__dirname, '../../packages/design-tokens/src/dark.css') },
+            { find: '@frontend-monorepo-showcase/design-tokens/css', replacement: path.resolve(__dirname, '../../packages/design-tokens/src/tokens.css') },
+            { find: '@frontend-monorepo-showcase/design-tokens', replacement: path.resolve(__dirname, '../../packages/design-tokens/src') },
+            { find: '@frontend-monorepo-showcase/ui-core', replacement: path.resolve(__dirname, '../../packages/ui-core/src') },
+            { find: '@frontend-monorepo-showcase/mock-engine', replacement: path.resolve(__dirname, '../../packages/mock-engine/src') },
+          ]
+        : [],
   },
   plugins: [
     react(),
@@ -55,4 +53,4 @@ export default defineConfig({
     modulePreload: false,
     minify: false,
   },
-});
+}));

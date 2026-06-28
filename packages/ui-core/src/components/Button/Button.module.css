@@ -1,0 +1,110 @@
+@layer components {
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-weight: var(--font-weight-medium, 500);
+    line-height: var(--font-line-height-normal, 1.5);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1)),
+                box-shadow var(--motion-duration-fast, 100ms) var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1)),
+                border-color var(--motion-duration-fast, 100ms) var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1));
+    outline: none;
+  }
+
+  .variantPrimary {
+    background-color: var(--color-primary-600, #2563eb);
+    color: var(--color-text-inverse, #ffffff);
+    border: none;
+  }
+
+  .variantPrimary:hover:not(:disabled) {
+    background-color: var(--color-primary-700, #1d4ed8);
+  }
+
+  .variantSecondary {
+    background-color: transparent;
+    color: var(--color-primary-700, #1d4ed8);
+    border: 2px solid var(--color-primary-600, #2563eb);
+  }
+
+  .variantSecondary:hover:not(:disabled) {
+    background-color: var(--color-primary-50, #eff6ff);
+  }
+
+  .variantGhost {
+    background-color: transparent;
+    color: var(--color-text-primary, #111827);
+    border: 2px solid transparent;
+  }
+
+  .variantGhost:hover:not(:disabled) {
+    background-color: var(--color-neutral-100, #f3f4f6);
+  }
+
+  .sizeSm {
+    padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+    font-size: var(--font-size-sm, 0.875rem);
+  }
+
+  .sizeMd {
+    padding: var(--spacing-sm, 8px) var(--spacing-lg, 16px);
+    font-size: var(--font-size-base, 1rem);
+  }
+
+  .sizeLg {
+    padding: var(--spacing-md, 12px) var(--spacing-xl, 24px);
+    font-size: var(--font-size-lg, 1.125rem);
+  }
+
+  .disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .button:focus-visible {
+    box-shadow: 0 0 0 3px var(--color-primary-300, #93c5fd);
+  }
+}
+
+@layer variants {
+  @media (prefers-contrast: more) {
+    .variantPrimary {
+      border: 2px solid currentColor;
+    }
+
+    .variantSecondary {
+      border-width: 3px;
+    }
+
+    .button:focus-visible {
+      box-shadow: 0 0 0 3px currentColor;
+      outline: 2px solid transparent;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .button {
+      border: 1px solid ButtonText;
+      background-color: ButtonFace;
+      color: ButtonText;
+    }
+
+    .button:hover:not(:disabled) {
+      border-color: Highlight;
+      color: Highlight;
+    }
+
+    .button:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+
+    .disabled {
+      color: GrayText;
+      border-color: GrayText;
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "@frontend-monorepo-showcase/design-tokens",
+  "version": "0.0.1",
+  "type": "module",
+  "sideEffects": ["*.css"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs"
+    },
+    "./css": "./dist/tokens.css",
+    "./css/layers": "./dist/layers.css",
+    "./css/dark": "./dist/dark.css",
+    "./css/high-contrast": "./dist/high-contrast.css",
+    "./colors": {
+      "types": "./dist/colors.d.ts",
+      "import": "./dist/esm/colors.js"
+    },
+    "./spacing": {
+      "types": "./dist/spacing.d.ts",
+      "import": "./dist/esm/spacing.js"
+    },
+    "./typography": {
+      "types": "./dist/typography.d.ts",
+      "import": "./dist/esm/typography.js"
+    },
+    "./motion": {
+      "types": "./dist/motion.d.ts",
+      "import": "./dist/esm/motion.js"
+    },
+    "./elevation": {
+      "types": "./dist/elevation.d.ts",
+      "import": "./dist/esm/elevation.js"
+    },
+    "./breakpoints": {
+      "types": "./dist/breakpoints.d.ts",
+      "import": "./dist/esm/breakpoints.js"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "generate-tokens": "tsx scripts/generate-tokens.ts",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vite": "*",
+    "vite-plugin-dts": "*",
+    "typescript": "*",
+    "tsx": "*"
+  }
+}

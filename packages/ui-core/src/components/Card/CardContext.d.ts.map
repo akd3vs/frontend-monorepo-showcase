@@ -1,0 +1,1 @@
+{"version":3,"file":"CardContext.d.ts","sourceRoot":"","sources":["CardContext.ts"],"names":[],"mappings":"AAEA,qEAAqE;AACrE,MAAM,WAAW,gBAAgB;IAC/B,oCAAoC;IACpC,SAAS,EAAE,OAAO,CAAC;IACnB,oCAAoC;IACpC,SAAS,EAAE,OAAO,CAAC;CACpB;AAED,yEAAyE;AACzE,eAAO,MAAM,WAAW,kDAA+C,CAAC;AAExE;;GAEG;AACH,wBAAgB,cAAc,IAAI,gBAAgB,CAYjD"}

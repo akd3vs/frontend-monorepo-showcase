@@ -4,10 +4,10 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { axe } from 'vitest-axe';
 
 import { Button } from '../components/Button';
-import { Card } from '../components/Card';
+import { CardLegacy as Card } from '../components/Card';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Skeleton } from '../components/Skeleton';
-import { Table } from '../components/Table';
+import { TableLegacy as Table } from '../components/Table';
 
 // ─── Button Component ───────────────────────────────────────────────────────
 
@@ -200,7 +200,7 @@ describe('Skeleton', () => {
   it('supports different variants', () => {
     const { container } = render(<Skeleton variant="circular" />);
     const el = container.querySelector('[role="progressbar"]') as HTMLElement;
-    expect(el.style.borderRadius).toBe('50%');
+    expect(el.className).toContain('circular');
   });
 
   it('passes axe-core accessibility checks', async () => {
