@@ -107,9 +107,7 @@ function TableHeader({ children }: TableHeaderProps): React.ReactElement {
   if (process.env.NODE_ENV !== 'production') {
     React.Children.forEach(children, (child) => {
       if (React.isValidElement(child) && !isValidSectionChild(child)) {
-        console.warn(
-          '[Table.Header] Invalid child component rendered. Expected Table.Row.'
-        );
+        console.warn('[Table.Header] Invalid child component rendered. Expected Table.Row.');
       }
     });
   }
@@ -127,9 +125,7 @@ function TableBody({ children }: TableBodyProps): React.ReactElement {
   if (process.env.NODE_ENV !== 'production') {
     React.Children.forEach(children, (child) => {
       if (React.isValidElement(child) && !isValidSectionChild(child)) {
-        console.warn(
-          '[Table.Body] Invalid child component rendered. Expected Table.Row.'
-        );
+        console.warn('[Table.Body] Invalid child component rendered. Expected Table.Row.');
       }
     });
   }
@@ -147,9 +143,7 @@ function TableFooter({ children }: TableFooterProps): React.ReactElement {
   if (process.env.NODE_ENV !== 'production') {
     React.Children.forEach(children, (child) => {
       if (React.isValidElement(child) && !isValidSectionChild(child)) {
-        console.warn(
-          '[Table.Footer] Invalid child component rendered. Expected Table.Row.'
-        );
+        console.warn('[Table.Footer] Invalid child component rendered. Expected Table.Row.');
       }
     });
   }
@@ -167,23 +161,16 @@ function TableRow({ children, className }: TableRowProps): React.ReactElement {
 
   if (process.env.NODE_ENV !== 'production') {
     if (section === null) {
-      console.warn(
-        '[Table.Row] Rendered outside of Table.Header, Table.Body, or Table.Footer.'
-      );
+      console.warn('[Table.Row] Rendered outside of Table.Header, Table.Body, or Table.Footer.');
     }
     React.Children.forEach(children, (child) => {
       if (React.isValidElement(child) && !isValidRowChild(child)) {
-        console.warn(
-          '[Table.Row] Invalid child component rendered. Expected Table.Cell.'
-        );
+        console.warn('[Table.Row] Invalid child component rendered. Expected Table.Cell.');
       }
     });
   }
 
-  const rowClassName = [
-    section === 'body' ? styles['bodyRow'] : undefined,
-    className,
-  ]
+  const rowClassName = [section === 'body' ? styles['bodyRow'] : undefined, className]
     .filter(Boolean)
     .join(' ');
 
@@ -194,21 +181,14 @@ function TableRow({ children, className }: TableRowProps): React.ReactElement {
   );
 }
 
-function TableCell({
-  children,
-  header,
-  scope,
-  className,
-}: TableCellProps): React.ReactElement {
+function TableCell({ children, header, scope, className }: TableCellProps): React.ReactElement {
   useTableContext(); // Validates we're inside Table
   const section = useTableSectionContext();
   const inRow = useTableRowContext();
 
   if (process.env.NODE_ENV !== 'production') {
     if (!inRow) {
-      console.warn(
-        '[Table.Cell] Rendered outside of Table.Row.'
-      );
+      console.warn('[Table.Cell] Rendered outside of Table.Row.');
     }
   }
 
@@ -240,7 +220,7 @@ function TableRoot({
     React.Children.forEach(children, (child) => {
       if (React.isValidElement(child) && !isValidTableChild(child)) {
         console.warn(
-          '[Table] Invalid child component rendered. Expected Table.Header, Table.Body, or Table.Footer.'
+          '[Table] Invalid child component rendered. Expected Table.Header, Table.Body, or Table.Footer.',
         );
       }
     });
@@ -254,7 +234,7 @@ function TableRoot({
         className={styles['wrapper']}
         role="region"
         aria-label={`${ariaLabel} (scrollable)`}
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- tabIndex needed on scrollable region for keyboard accessibility
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         tabIndex={0}
       >
         <table role="table" aria-label={ariaLabel} className={tableClassName}>

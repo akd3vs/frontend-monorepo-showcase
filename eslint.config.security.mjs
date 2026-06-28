@@ -15,8 +15,14 @@
  */
 import js from '@eslint/js';
 import tsParser from '@typescript-eslint/parser';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 
 export default [
+  {
+    linterOptions: {
+      reportUnusedDisableDirectives: 'off',
+    },
+  },
   js.configs.recommended,
   {
     files: ['**/*.{ts,tsx,mts}'],
@@ -29,6 +35,9 @@ export default [
           jsx: true,
         },
       },
+    },
+    plugins: {
+      'jsx-a11y': jsxA11y,
     },
     rules: {
       // Disallow eval() — arbitrary code execution risk

@@ -18,9 +18,31 @@
     "jsx": "react-jsx",
     "paths": {
       "@frontend-monorepo-showcase/design-tokens": ["./packages/design-tokens/src/index.ts"],
-      "@frontend-monorepo-showcase/design-tokens/css/layers": ["./packages/design-tokens/src/layers.css"],
+      "@frontend-monorepo-showcase/design-tokens/colors": [
+        "./packages/design-tokens/src/colors.ts"
+      ],
+      "@frontend-monorepo-showcase/design-tokens/spacing": [
+        "./packages/design-tokens/src/spacing.ts"
+      ],
+      "@frontend-monorepo-showcase/design-tokens/typography": [
+        "./packages/design-tokens/src/typography.ts"
+      ],
+      "@frontend-monorepo-showcase/design-tokens/motion": [
+        "./packages/design-tokens/src/motion.ts"
+      ],
+      "@frontend-monorepo-showcase/design-tokens/elevation": [
+        "./packages/design-tokens/src/elevation.ts"
+      ],
+      "@frontend-monorepo-showcase/design-tokens/breakpoints": [
+        "./packages/design-tokens/src/breakpoints.ts"
+      ],
+      "@frontend-monorepo-showcase/design-tokens/css/layers": [
+        "./packages/design-tokens/src/layers.css"
+      ],
       "@frontend-monorepo-showcase/design-tokens/css": ["./packages/design-tokens/src/tokens.css"],
-      "@frontend-monorepo-showcase/design-tokens/css/dark": ["./packages/design-tokens/src/dark.css"],
+      "@frontend-monorepo-showcase/design-tokens/css/dark": [
+        "./packages/design-tokens/src/dark.css"
+      ],
       "@frontend-monorepo-showcase/ui-core": ["./packages/ui-core/src/index.ts"],
       "@frontend-monorepo-showcase/mock-engine": ["./packages/mock-engine/src/index.ts"],
       "@frontend-monorepo-showcase/perf-guardian": ["./packages/perf-guardian/src/index.ts"]
