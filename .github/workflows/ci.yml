@@ -88,7 +88,6 @@ jobs:
 
   test:
     name: Unit Tests
-    needs: [lint-typecheck]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -110,7 +109,7 @@ jobs:
 
   build:
     name: Build
-    needs: [test]
+    needs: [lint-typecheck, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
