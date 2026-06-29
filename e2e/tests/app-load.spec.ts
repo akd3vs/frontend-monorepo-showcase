@@ -23,13 +23,9 @@ test.describe('Application Load', () => {
     await expect(page.locator('.header-bar__avatar')).toBeVisible();
   });
 
-  test('renders navigation sidebar on desktop viewport', async ({
+  test('renders navigation sidebar on desktop viewport @desktop', async ({
     page,
-  }, testInfo) => {
-    if (testInfo.project.name === 'mobile-chromium') {
-      test.skip();
-    }
-
+  }) => {
     await page.goto('/portfolio');
 
     // Sidebar navigation should be visible
@@ -40,6 +36,15 @@ test.describe('Application Load', () => {
     await expect(sidebar.getByText('Portfolio')).toBeVisible();
     await expect(sidebar.getByText('Currencies')).toBeVisible();
     await expect(sidebar.getByText('Transactions')).toBeVisible();
+
+    // Wait for federated content to fully load (data or error state)
+    await expect(
+      page
+        .locator(
+          '[data-testid="stock-balances-view"], [data-testid="stock-balances-error"]',
+        )
+        .first(),
+    ).toBeVisible({ timeout: 30_000 });
   });
 
   test('loads federated Data_Dashboard content (stock balances view)', async ({

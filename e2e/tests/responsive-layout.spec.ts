@@ -6,12 +6,7 @@ import { test, expect } from '@playwright/test';
  * Validates Requirements: 10.1, 10.4
  */
 test.describe('Responsive Layout', () => {
-  test.describe('Desktop viewport', () => {
-    test.beforeEach(async ({}, testInfo) => {
-      if (testInfo.project.name === 'mobile-chromium') {
-        test.skip();
-      }
-    });
+  test.describe('Desktop viewport @desktop', () => {
 
     test('shows sidebar navigation, hides bottom bar', async ({ page }) => {
       await page.goto('/portfolio');
@@ -48,12 +43,7 @@ test.describe('Responsive Layout', () => {
     });
   });
 
-  test.describe('Mobile viewport', () => {
-    test.beforeEach(async ({}, testInfo) => {
-      if (testInfo.project.name !== 'mobile-chromium') {
-        test.skip();
-      }
-    });
+  test.describe('Mobile viewport @mobile', () => {
 
     test('shows bottom bar navigation, hides sidebar', async ({ page }) => {
       await page.goto('/portfolio');

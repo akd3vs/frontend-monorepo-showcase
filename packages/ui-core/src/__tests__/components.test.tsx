@@ -4,10 +4,10 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { axe } from 'vitest-axe';
 
 import { Button } from '../components/Button';
-import { Card } from '../components/Card';
+import { CardLegacy as Card } from '../components/Card';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Skeleton } from '../components/Skeleton';
-import { Table } from '../components/Table';
+import { TableLegacy as Table } from '../components/Table';
 
 // ─── Button Component ───────────────────────────────────────────────────────
 
@@ -177,14 +177,16 @@ describe('Table', () => {
 // ─── Skeleton Component ─────────────────────────────────────────────────────
 
 describe('Skeleton', () => {
-  it('renders with progressbar role', () => {
-    render(<Skeleton />);
+  it('renders with progressbar role when aria-label is provided', () => {
+    render(<Skeleton aria-label="Loading..." />);
     expect(screen.getByRole('progressbar')).toBeDefined();
   });
 
-  it('has default aria-label "Loading..."', () => {
-    render(<Skeleton />);
-    expect(screen.getByRole('progressbar').getAttribute('aria-label')).toBe('Loading...');
+  it('renders as aria-hidden when no aria-label is provided', () => {
+    const { container } = render(<Skeleton />);
+    const el = container.firstElementChild as HTMLElement;
+    expect(el.getAttribute('aria-hidden')).toBe('true');
+    expect(el.getAttribute('role')).toBeNull();
   });
 
   it('uses custom aria-label', () => {
@@ -192,15 +194,15 @@ describe('Skeleton', () => {
     expect(screen.getByRole('progressbar').getAttribute('aria-label')).toBe('Loading profile');
   });
 
-  it('sets aria-busy to true', () => {
-    render(<Skeleton />);
+  it('sets aria-busy to true when aria-label is provided', () => {
+    render(<Skeleton aria-label="Loading..." />);
     expect(screen.getByRole('progressbar').getAttribute('aria-busy')).toBe('true');
   });
 
   it('supports different variants', () => {
-    const { container } = render(<Skeleton variant="circular" />);
+    const { container } = render(<Skeleton variant="circular" aria-label="Loading..." />);
     const el = container.querySelector('[role="progressbar"]') as HTMLElement;
-    expect(el.style.borderRadius).toBe('50%');
+    expect(el.className).toContain('circular');
   });
 
   it('passes axe-core accessibility checks', async () => {
@@ -252,7 +254,7 @@ describe('ErrorBoundary', () => {
 
   it('displays retry, reset, and navigate buttons', () => {
     render(
-      <ErrorBoundary boundaryId="test-3">
+      <ErrorBoundary boundaryId="test-3" onNavigate={() => {}}>
         <ThrowingComponent shouldThrow={true} />
       </ErrorBoundary>,
     );

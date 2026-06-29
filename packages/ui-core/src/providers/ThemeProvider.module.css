@@ -1,0 +1,9 @@
+@layer components {
+  .themeTransition {
+    transition: color var(--motion-duration-slow, 300ms) var(--motion-easing-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)),
+                background-color var(--motion-duration-slow, 300ms) var(--motion-easing-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)),
+                border-color var(--motion-duration-slow, 300ms) var(--motion-easing-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)),
+                fill var(--motion-duration-slow, 300ms) var(--motion-easing-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)),
+                box-shadow var(--motion-duration-slow, 300ms) var(--motion-easing-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+}

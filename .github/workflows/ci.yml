@@ -11,6 +11,12 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
+env:
+  NX_SKIP_NX_CACHE: true
+
 jobs:
   lint-typecheck:
     name: Lint & Type Check
@@ -61,9 +67,27 @@ jobs:
             --plugin @eslint/js --ignore-pattern 'node_modules/**' --ignore-pattern 'dist/**' \
             --ignore-pattern '.nx/**' --max-warnings 0 || true
 
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check dependency licenses
+        run: |
+          npx --yes license-checker --production --failOn "GPL-2.0;GPL-3.0;AGPL-1.0;AGPL-3.0;SSPL-1.0;EUPL-1.1;EUPL-1.2" --summary
+
   test:
     name: Unit Tests
-    needs: [lint-typecheck]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -80,12 +104,12 @@ jobs:
       - name: Register Vitest problem matcher
         run: echo "::add-matcher::.github/problem-matchers/vitest.json"
 
-      - name: Run unit tests for all workspaces
-        run: npx nx run-many -t test --all -- --reporter=verbose
+      - name: Run unit tests with coverage
+        run: npx nx run-many -t test --all -- --reporter=verbose --coverage
 
   build:
     name: Build
-    needs: [test]
+    needs: [lint-typecheck, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -115,6 +139,8 @@ jobs:
     name: Perf Guardian
     needs: [build]
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -133,8 +159,7 @@ jobs:
       - name: Run Perf Guardian budget checks
         id: perf
         run: |
-          node packages/perf-guardian/dist/cli.js --config perf-guardian.config.json --json > perf-results.json || true
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          node packages/perf-guardian/dist/cli.js --config perf-guardian.config.json 2> perf-results.json
           cat perf-results.json
 
       - name: Post Perf Guardian results as PR comment
@@ -200,6 +225,40 @@ jobs:
               });
             }
 
+  e2e:
+    name: E2E Tests
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npx playwright test --config=e2e/playwright.config.ts
+        env:
+          CI: true
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: playwright-report/
+          retention-days: 7
+
   publish-dry-run:
     name: Publish Dry Run (UI Core)
     needs: [build]
@@ -220,81 +279,3 @@ jobs:
       - name: Publish dry run
         run: npm publish --dry-run
         working-directory: packages/ui-core
-
-  check-ui-core-changes:
-    name: Check UI Core Changes
-    needs: [build]
-    runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.filter.outputs.ui-core }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Check for UI Core changes
-        id: filter
-        run: |
-          if git diff --name-only origin/main...HEAD | grep -q '^packages/ui-core/'; then
-            echo "ui-core=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "ui-core=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  visual-regression:
-    name: Visual Regression Tests
-    needs: [check-ui-core-changes]
-    if: needs.check-ui-core-changes.outputs.changed == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Build Storybook
-        run: npx storybook build --output-dir packages/ui-core/storybook-static
-        working-directory: packages/ui-core
-
-      - name: Run visual regression tests
-        run: |
-          npx concurrently -k -s first \
-            "npx http-server packages/ui-core/storybook-static --port 6006 --silent" \
-            "npx wait-on http://localhost:6006 && npx test-storybook --url http://localhost:6006"
-
-  accessibility:
-    name: Accessibility Audit
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - run: npm ci
-
-      - name: Build all workspaces
-        run: npx nx run-many -t build --all
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Run accessibility audit with axe-core
-        run: |
-          npx concurrently -k -s first \
-            "npx http-server apps/host-shell/dist --port 4173 --silent -P http://localhost:4173?" \
-            "npx wait-on http://localhost:4173 && npx playwright test --config=playwright.axe.config.ts || true"

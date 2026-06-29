@@ -30,6 +30,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
       },
+      grepInvert: /@mobile/,
     },
     {
       name: 'mobile-chromium',
@@ -37,6 +38,7 @@ export default defineConfig({
         ...devices['Pixel 5'],
         viewport: { width: 375, height: 667 },
       },
+      grepInvert: /@desktop/,
     },
   ],
 

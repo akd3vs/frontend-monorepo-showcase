@@ -1,10 +1,31 @@
 /**
  * UI_Core Theme Tokens
  *
- * Provides design tokens for colors, spacing, and typography
- * to ensure consistent styling across the application.
+ * Re-exports TypeScript token objects from @frontend-monorepo-showcase/design-tokens
+ * for backward compatibility. Consumers can import directly from design-tokens
+ * or continue using this module.
  */
 
+import { spacing as spacingTokens } from '@frontend-monorepo-showcase/design-tokens/spacing';
+
+// Re-export design-token objects for consumers who want the full token API
+export {
+  colorTokens,
+  primary,
+  secondary,
+  success,
+  warning,
+  error,
+  neutral,
+} from '@frontend-monorepo-showcase/design-tokens/colors';
+export { spacing, spacingPx } from '@frontend-monorepo-showcase/design-tokens/spacing';
+export { fontFamilies, fontSizes, fontWeights, lineHeights } from '@frontend-monorepo-showcase/design-tokens/typography';
+export { motionDurations, motionEasings } from '@frontend-monorepo-showcase/design-tokens/motion';
+export { elevation, elevationDark } from '@frontend-monorepo-showcase/design-tokens/elevation';
+export { breakpoints } from '@frontend-monorepo-showcase/design-tokens/breakpoints';
+
+// Legacy theme objects for backward compatibility with existing components.
+// These use simplified hex-string structures that existing inline-style components expect.
 export const colors = {
   primary: {
     50: '#eff6ff',
@@ -88,17 +109,6 @@ export const colors = {
   },
 } as const;
 
-export const spacing = {
-  xs: '4px',
-  sm: '8px',
-  md: '12px',
-  lg: '16px',
-  xl: '24px',
-  '2xl': '32px',
-  '3xl': '48px',
-  '4xl': '64px',
-} as const;
-
 export const typography = {
   fontFamilies: {
     sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
@@ -128,12 +138,12 @@ export const typography = {
 } as const;
 
 export type Colors = typeof colors;
-export type Spacing = typeof spacing;
+export type Spacing = typeof spacingTokens;
 export type Typography = typeof typography;
 
 export const theme = {
   colors,
-  spacing,
+  spacing: spacingTokens,
   typography,
 } as const;
 

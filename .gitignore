@@ -26,6 +26,7 @@ Thumbs.db
 
 # Test coverage
 coverage
+.coverage-reports
 
 # MSW generated service worker (regenerated via `npx msw init public/`)
 apps/host-shell/public/mockServiceWorker.js
@@ -46,3 +47,12 @@ perf-results.json
 e2e/test-results
 e2e/playwright-report
 playwright-report
+
+# Visual test diffs (generated on failure, not committed)
+packages/ui-core/tests/visual/__diffs__
+packages/ui-core/test-results
+
+# Committed artifacts (review cleanup)
+test-results/
+packages/ui-core/renders
+apps/data-dashboard/.mf/

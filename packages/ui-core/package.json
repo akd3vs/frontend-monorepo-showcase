@@ -49,7 +49,12 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
+    "test:visual": "npx playwright test --config=playwright.visual.config.ts",
+    "test:visual:update": "npx playwright test --config=playwright.visual.config.ts --update-snapshots",
     "update-baselines": "bash ./scripts/update-baselines.sh"
+  },
+  "dependencies": {
+    "@frontend-monorepo-showcase/design-tokens": "*"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

@@ -9,12 +9,7 @@ import { test, expect } from '@playwright/test';
  * We verify that the CSS classes/styles for view transitions are present and that
  * stable elements (nav-sidebar, header-bar) have view-transition-name set.
  */
-test.describe('View Transitions', () => {
-  test.beforeEach(async ({}, testInfo) => {
-    if (testInfo.project.name === 'mobile-chromium') {
-      test.skip();
-    }
-  });
+test.describe('View Transitions @desktop', () => {
 
   test('navigation sidebar has view-transition-name CSS property', async ({
     page,

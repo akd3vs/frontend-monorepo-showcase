@@ -31,12 +31,24 @@ export default defineConfig({
       },
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        '@frontend-monorepo-showcase/design-tokens',
+        /^@frontend-monorepo-showcase\/design-tokens\//,
+      ],
       output: {
         preserveModules: false,
       },
     },
     outDir: 'dist',
     emptyOutDir: true,
+  },
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+      generateScopedName: '[name]__[local]__[hash:base64:5]',
+    },
   },
 });
