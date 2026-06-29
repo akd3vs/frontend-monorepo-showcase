@@ -22,12 +22,37 @@ export default defineConfig(({ mode }) => ({
     alias:
       mode !== 'production'
         ? [
-            { find: '@frontend-monorepo-showcase/design-tokens/css/layers', replacement: path.resolve(__dirname, '../../packages/design-tokens/src/layers.css') },
-            { find: '@frontend-monorepo-showcase/design-tokens/css/dark', replacement: path.resolve(__dirname, '../../packages/design-tokens/src/dark.css') },
-            { find: '@frontend-monorepo-showcase/design-tokens/css', replacement: path.resolve(__dirname, '../../packages/design-tokens/src/tokens.css') },
-            { find: '@frontend-monorepo-showcase/design-tokens', replacement: path.resolve(__dirname, '../../packages/design-tokens/src') },
-            { find: '@frontend-monorepo-showcase/ui-core', replacement: path.resolve(__dirname, '../../packages/ui-core/src') },
-            { find: '@frontend-monorepo-showcase/mock-engine', replacement: path.resolve(__dirname, '../../packages/mock-engine/src') },
+            {
+              find: '@frontend-monorepo-showcase/design-tokens/css/layers',
+              replacement: path.resolve(__dirname, '../../packages/design-tokens/src/layers.css'),
+            },
+            {
+              find: '@frontend-monorepo-showcase/design-tokens/css/dark',
+              replacement: path.resolve(__dirname, '../../packages/design-tokens/src/dark.css'),
+            },
+            {
+              find: '@frontend-monorepo-showcase/design-tokens/css/high-contrast',
+              replacement: path.resolve(
+                __dirname,
+                '../../packages/design-tokens/src/high-contrast.css',
+              ),
+            },
+            {
+              find: '@frontend-monorepo-showcase/design-tokens/css',
+              replacement: path.resolve(__dirname, '../../packages/design-tokens/src/tokens.css'),
+            },
+            {
+              find: '@frontend-monorepo-showcase/design-tokens',
+              replacement: path.resolve(__dirname, '../../packages/design-tokens/src'),
+            },
+            {
+              find: '@frontend-monorepo-showcase/ui-core',
+              replacement: path.resolve(__dirname, '../../packages/ui-core/src'),
+            },
+            {
+              find: '@frontend-monorepo-showcase/mock-engine',
+              replacement: path.resolve(__dirname, '../../packages/mock-engine/src'),
+            },
           ]
         : [],
   },
