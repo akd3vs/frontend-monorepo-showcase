@@ -1,8 +1,11 @@
 import { copyFileSync } from 'fs';
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** Plugin to copy standalone CSS files to dist after build */
 function copyCssPlugin() {
@@ -11,10 +14,7 @@ function copyCssPlugin() {
     closeBundle() {
       const cssFiles = ['layers.css', 'tokens.css', 'dark.css', 'high-contrast.css'];
       for (const file of cssFiles) {
-        copyFileSync(
-          resolve(__dirname, 'src', file),
-          resolve(__dirname, 'dist', file),
-        );
+        copyFileSync(resolve(__dirname, 'src', file), resolve(__dirname, 'dist', file));
       }
     },
   };
