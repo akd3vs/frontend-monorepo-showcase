@@ -376,10 +376,10 @@ jobs:
         working-directory: packages/ui-core
         timeout-minutes: 5
         run: |
-          npx --yes http-server storybook-static --port 6006 --silent &
+          npx http-server storybook-static --port 6006 --silent &
           SERVER_PID=$!
-          sleep 3
-          npx --yes wait-on http://localhost:6006 --timeout 60000
+          sleep 2
+          npx wait-on http://localhost:6006 --timeout 60000
           npx test-storybook --url http://localhost:6006 || true
           kill $SERVER_PID 2>/dev/null || true
 
