@@ -137,8 +137,7 @@ jobs:
       - name: Run Perf Guardian budget checks
         id: perf
         run: |
-          node packages/perf-guardian/dist/cli.js --config perf-guardian.config.json --json > perf-results.json || true
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          node packages/perf-guardian/dist/cli.js --config perf-guardian.config.json 2> perf-results.json || true
           cat perf-results.json
 
       - name: Post Perf Guardian results as PR comment
