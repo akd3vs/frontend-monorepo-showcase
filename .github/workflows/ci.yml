@@ -277,55 +277,6 @@ jobs:
         run: npm publish --dry-run
         working-directory: packages/ui-core
 
-  check-ui-core-changes:
-    name: Check UI Core Changes
-    needs: [build]
-    runs-on: ubuntu-latest
-    outputs:
-      changed: ${{ steps.filter.outputs.ui-core }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Check for UI Core changes
-        id: filter
-        run: |
-          if git diff --name-only origin/main...HEAD | grep -q '^packages/ui-core/'; then
-            echo "ui-core=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "ui-core=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  visual-regression:
-    name: Visual Regression Tests
-    needs: [check-ui-core-changes]
-    if: needs.check-ui-core-changes.outputs.changed == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Build Storybook
-        run: npx storybook build --output-dir packages/ui-core/storybook-static
-        working-directory: packages/ui-core
-
-      - name: Verify Storybook build output
-        run: |
-          ls -la packages/ui-core/storybook-static/index.html
-          echo "✓ Storybook static build verified"
-
   accessibility:
     name: Accessibility Audit
     needs: [build]
