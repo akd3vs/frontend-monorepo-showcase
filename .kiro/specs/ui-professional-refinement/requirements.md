@@ -132,7 +132,7 @@ This specification covers the professional refinement of the `ui-core` package's
 3. THE visual snapshot tests SHALL capture baseline screenshots of Card in two configurations: one with title, body content, and footer present, and one with title and body content only (footer omitted), each in both light and dark themes (4 screenshots total).
 4. THE visual snapshot tests SHALL capture baseline screenshots of Table with a populated state containing at least 5 data rows and a separate empty state showing the no-data indicator, each in both light and dark themes (4 screenshots total).
 5. THE visual snapshot tests SHALL capture Skeleton in its loading state with CSS animations paused (using `prefers-reduced-motion` or programmatic animation disabling) to produce a deterministic static frame, in both light and dark themes (2 screenshots total).
-6. WHEN new component variants are added to UI_Core, THE visual snapshot test suite SHALL fail with a missing-baseline error for any variant that does not have a corresponding stored baseline image, until the developer runs the update-baselines script to generate the new baselines.
+6. WHEN new component variants are added to UI_Core, THE visual snapshot test suite SHALL generate and store a new Baseline_Image for any variant that does not have a corresponding stored baseline image. Subsequent test runs SHALL compare against the stored baseline and fail if the pixel diff exceeds the configured threshold.
 
 ### Requirement 9: Theme Transition Behavior
 

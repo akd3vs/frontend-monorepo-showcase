@@ -482,11 +482,7 @@ The ThemeProvider is React-specific and lives in `ui-core`. It reads token value
 
 export interface ThemeProviderProps {
   children: React.ReactNode;
-  /**
-   * Function that returns the current dark mode enabled state.
-   * Typically: () => useFeatureFlag('dark-mode')
-   * Decouples ui-core from the host-shell feature flag implementation.
-   */
+  /** Whether dark mode is currently active. Driven by the host app's feature flag system. */
   isDarkMode: boolean;
   /** Override system preference detection. Defaults to true. */
   respectSystemPreference?: boolean;
@@ -1002,7 +998,7 @@ export default defineConfig({
 
 The Nx workspace automatically resolves the build order via the `dependsOn` relationships in `package.json`:
 
-```
+```text
 design-tokens:build  →  ui-core:build  →  host-shell:build / data-dashboard:build
 ```
 
@@ -1014,7 +1010,7 @@ Because `ui-core`'s `package.json` declares `@frontend-monorepo-showcase/design-
 {
   "name": "@frontend-monorepo-showcase/ui-core",
   "dependencies": {
-    "@frontend-monorepo-showcase/design-tokens": "workspace:*"
+    "@frontend-monorepo-showcase/design-tokens": "*"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
@@ -1124,7 +1120,7 @@ export const colorScaleConfigs: Record<string, OklchConfig> = {
 
 ### File Structure
 
-```
+```text
 packages/design-tokens/
 ├── package.json              # @frontend-monorepo-showcase/design-tokens
 ├── vite.config.ts            # Vite library mode build config
@@ -1341,7 +1337,7 @@ _For any_ shade in the TypeScript color token objects (primary, secondary, succe
 ### Example Property Test (Property 7: OKLCH Lightness Uniformity)
 
 ```typescript
-import { fc } from 'fast-check';
+import fc from 'fast-check';
 import { describe, it, expect } from 'vitest';
 import {
   generateColorScale,
