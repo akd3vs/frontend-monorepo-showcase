@@ -23,11 +23,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   className,
   'aria-label': ariaLabel,
 }) => {
-  const classNames = [
-    styles['skeleton'],
-    styles[variant],
-    className,
-  ].filter(Boolean).join(' ');
+  const classNames = [styles['skeleton'], styles[variant], className].filter(Boolean).join(' ');
 
   // Custom dimensions override the defaults from CSS
   const inlineStyle: React.CSSProperties = {};
@@ -38,11 +34,12 @@ export const Skeleton: React.FC<SkeletonProps> = ({
     <div
       className={classNames}
       style={Object.keys(inlineStyle).length > 0 ? inlineStyle : undefined}
-      role="progressbar"
-      aria-label={ariaLabel || 'Loading...'}
-      aria-busy={true}
-      aria-valuemin={0}
-      aria-valuemax={100}
+      role={ariaLabel ? 'progressbar' : undefined}
+      aria-label={ariaLabel}
+      aria-hidden={ariaLabel ? undefined : true}
+      aria-busy={ariaLabel ? true : undefined}
+      aria-valuemin={ariaLabel ? 0 : undefined}
+      aria-valuemax={ariaLabel ? 100 : undefined}
     />
   );
 };

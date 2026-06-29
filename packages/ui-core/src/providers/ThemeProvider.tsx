@@ -23,18 +23,13 @@ function isValidTheme(value: string | undefined): value is ValidTheme {
   return VALID_THEMES.includes(value as ValidTheme);
 }
 
-function resolveTheme(
-  isDarkMode: boolean,
-  respectSystemPreference: boolean
-): ValidTheme {
+function resolveTheme(isDarkMode: boolean, respectSystemPreference: boolean): ValidTheme {
   if (isDarkMode) {
     return 'dark';
   }
 
   if (respectSystemPreference && typeof window !== 'undefined') {
-    const systemPrefersDark = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches;
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (systemPrefersDark) {
       return 'dark';
     }
@@ -78,13 +73,11 @@ export function ThemeProvider({
 
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
-        if (
-          mutation.type === 'attributes' &&
-          mutation.attributeName === 'data-theme'
-        ) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
           const currentValue = root.dataset.theme;
-          if (!isValidTheme(currentValue)) {
-            // Reset to the last known valid theme
+          if (isValidTheme(currentValue)) {
+            currentThemeRef.current = currentValue;
+          } else {
             root.dataset.theme = currentThemeRef.current;
           }
         }

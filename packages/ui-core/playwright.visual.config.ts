@@ -26,7 +26,7 @@ export default defineConfig({
   },
 
   /* Snapshot path template places baselines under __baselines__/ */
-  snapshotPathTemplate: '{testDir}/__baselines__/{testFilePath}/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/__baselines__/{testFilePath}/{projectName}/{arg}{ext}',
 
   use: {
     baseURL: 'http://localhost:6006',

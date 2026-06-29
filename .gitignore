@@ -50,3 +50,8 @@ playwright-report
 # Visual test diffs (generated on failure, not committed)
 packages/ui-core/tests/visual/__diffs__
 packages/ui-core/test-results
+
+# Committed artifacts (review cleanup)
+test-results/
+packages/ui-core/renders
+apps/data-dashboard/.mf/

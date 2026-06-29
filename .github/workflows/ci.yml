@@ -13,7 +13,6 @@ concurrency:
 
 permissions:
   contents: read
-  pull-requests: write
 
 env:
   NX_SKIP_NX_CACHE: true
@@ -73,6 +72,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
@@ -139,6 +140,8 @@ jobs:
     name: Perf Guardian
     needs: [build]
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -157,7 +160,7 @@ jobs:
       - name: Run Perf Guardian budget checks
         id: perf
         run: |
-          node packages/perf-guardian/dist/cli.js --config perf-guardian.config.json 2> perf-results.json || true
+          node packages/perf-guardian/dist/cli.js --config perf-guardian.config.json 2> perf-results.json
           cat perf-results.json
 
       - name: Post Perf Guardian results as PR comment
@@ -232,6 +235,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:

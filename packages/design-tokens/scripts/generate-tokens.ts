@@ -9,7 +9,7 @@
 
 import { writeFileSync } from 'fs';
 import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -46,7 +46,7 @@ function oklabToLinearSrgb(L: number, a: number, b: number): [number, number, nu
   // OKLab to LMS (cube root space)
   const l_ = L + 0.3963377774 * a + 0.2158037573 * b;
   const m_ = L - 0.1055613458 * a - 0.0638541728 * b;
-  const s_ = L - 0.0894841775 * a - 1.2914855480 * b;
+  const s_ = L - 0.0894841775 * a - 1.291485548 * b;
 
   // Undo cube root
   const l = l_ * l_ * l_;
@@ -56,7 +56,7 @@ function oklabToLinearSrgb(L: number, a: number, b: number): [number, number, nu
   // LMS to linear sRGB
   const r = +4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
   const g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
-  const bOut = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+  const bOut = -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s;
 
   return [r, g, bOut];
 }
@@ -191,7 +191,7 @@ async function main(): Promise<void> {
   const configPath = resolve(__dirname, '../src/config.ts');
 
   // Use dynamic import for the config
-  const { colorScaleConfigs } = await import(configPath);
+  const { colorScaleConfigs } = await import(pathToFileURL(configPath).href);
 
   const scaleNames = Object.keys(colorScaleConfigs) as string[];
   const generatedScales: Record<string, GeneratedShade[]> = {};
@@ -218,7 +218,9 @@ async function main(): Promise<void> {
     lines.push(`const ${name}: ColorScale = {`);
     for (const shade of shades) {
       const { l, c, h } = shade.oklch;
-      lines.push(`  ${shade.shade}: { hex: '${shade.hex}', oklch: { l: ${l}, c: ${c}, h: ${h} } },`);
+      lines.push(
+        `  ${shade.shade}: { hex: '${shade.hex}', oklch: { l: ${l}, c: ${c}, h: ${h} } },`,
+      );
     }
     lines.push(`};`);
     lines.push(``);

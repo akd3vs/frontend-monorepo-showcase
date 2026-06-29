@@ -43,6 +43,9 @@
       "@frontend-monorepo-showcase/design-tokens/css/dark": [
         "./packages/design-tokens/src/dark.css"
       ],
+      "@frontend-monorepo-showcase/design-tokens/css/high-contrast": [
+        "./packages/design-tokens/src/high-contrast.css"
+      ],
       "@frontend-monorepo-showcase/ui-core": ["./packages/ui-core/src/index.ts"],
       "@frontend-monorepo-showcase/mock-engine": ["./packages/mock-engine/src/index.ts"],
       "@frontend-monorepo-showcase/perf-guardian": ["./packages/perf-guardian/src/index.ts"]

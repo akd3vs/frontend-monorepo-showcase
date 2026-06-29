@@ -172,54 +172,81 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   private renderRecoveryUI(): React.ReactElement {
-    return React.createElement('div', {
-      role: 'alert',
-      'aria-live': 'assertive',
-      className: styles['container'],
-    },
+    return React.createElement(
+      'div',
+      {
+        role: 'alert',
+        'aria-live': 'assertive',
+        className: styles['container'],
+      },
       React.createElement('h2', { className: styles['title'] }, 'Something went wrong'),
-      React.createElement('p', { className: styles['message'] },
-        this.state.error?.message || 'An unexpected error occurred'
+      React.createElement(
+        'p',
+        { className: styles['message'] },
+        this.state.error?.message || 'An unexpected error occurred',
       ),
-      React.createElement('div', { className: styles['buttonContainer'] },
-        React.createElement('button', {
-          onClick: this.handleRetry,
-          className: [styles['buttonBase'], styles['retryButton']].join(' '),
-          'aria-label': 'Retry: reload this section',
-        }, 'Retry'),
-        React.createElement('button', {
-          onClick: this.handleReset,
-          className: [styles['buttonBase'], styles['resetButton']].join(' '),
-          'aria-label': 'Reset: clear error and try again',
-        }, 'Reset'),
-        React.createElement('button', {
-          onClick: this.handleNavigate,
-          className: [styles['buttonBase'], styles['navigateButton']].join(' '),
-          'aria-label': 'Navigate to a safe page',
-        }, 'Go to Safety'),
-      )
+      React.createElement(
+        'div',
+        { className: styles['buttonContainer'] },
+        React.createElement(
+          'button',
+          {
+            onClick: this.handleRetry,
+            className: [styles['buttonBase'], styles['retryButton']].join(' '),
+            'aria-label': 'Retry: reload this section',
+          },
+          'Retry',
+        ),
+        React.createElement(
+          'button',
+          {
+            onClick: this.handleReset,
+            className: [styles['buttonBase'], styles['resetButton']].join(' '),
+            'aria-label': 'Reset: clear error and try again',
+          },
+          'Reset',
+        ),
+        this.props.onNavigate &&
+          React.createElement(
+            'button',
+            {
+              onClick: this.handleNavigate,
+              className: [styles['buttonBase'], styles['navigateButton']].join(' '),
+              'aria-label': 'Navigate to a safe page',
+            },
+            'Go to Safety',
+          ),
+      ),
     );
   }
 
   private renderEscalatedUI(): React.ReactElement {
-    return React.createElement('div', {
-      role: 'alert',
-      'aria-live': 'assertive',
-      className: styles['containerEscalated'],
-    },
+    return React.createElement(
+      'div',
+      {
+        role: 'alert',
+        'aria-live': 'assertive',
+        className: styles['containerEscalated'],
+      },
       React.createElement('h2', { className: styles['titleEscalated'] }, 'Persistent Error'),
-      React.createElement('p', { className: styles['messageEscalated'] },
-        'This section has encountered repeated errors. Please reload the page to resolve the issue.'
+      React.createElement(
+        'p',
+        { className: styles['messageEscalated'] },
+        'This section has encountered repeated errors. Please reload the page to resolve the issue.',
       ),
-      React.createElement('button', {
-        onClick: () => {
-          if (typeof window !== 'undefined') {
-            window.location.reload();
-          }
+      React.createElement(
+        'button',
+        {
+          onClick: () => {
+            if (typeof window !== 'undefined') {
+              window.location.reload();
+            }
+          },
+          className: styles['reloadButton'],
+          'aria-label': 'Reload the page',
         },
-        className: styles['reloadButton'],
-        'aria-label': 'Reload the page',
-      }, 'Reload Page'),
+        'Reload Page',
+      ),
     );
   }
 }
