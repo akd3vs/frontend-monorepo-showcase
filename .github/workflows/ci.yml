@@ -31,6 +31,15 @@ jobs:
 
       - run: npm ci
 
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nx-${{ runner.os }}-
+
       - name: Register ESLint problem matcher
         run: echo "::add-matcher::.github/problem-matchers/eslint.json"
 
@@ -65,6 +74,23 @@ jobs:
             --plugin @eslint/js --ignore-pattern 'node_modules/**' --ignore-pattern 'dist/**' \
             --ignore-pattern '.nx/**' --max-warnings 0 || true
 
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check dependency licenses
+        run: |
+          npx --yes license-checker --production --failOn "GPL-2.0;GPL-3.0;AGPL-1.0;AGPL-3.0;SSPL-1.0;EUPL-1.1;EUPL-1.2" --summary
+
   test:
     name: Unit Tests
     needs: [lint-typecheck]
@@ -81,11 +107,20 @@ jobs:
 
       - run: npm ci
 
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nx-${{ runner.os }}-
+
       - name: Register Vitest problem matcher
         run: echo "::add-matcher::.github/problem-matchers/vitest.json"
 
-      - name: Run unit tests for all workspaces
-        run: npx nx run-many -t test --all -- --reporter=verbose
+      - name: Run unit tests with coverage
+        run: npx nx run-many -t test --all -- --reporter=verbose --coverage
 
   build:
     name: Build
@@ -102,6 +137,15 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nx-${{ runner.os }}-
 
       - name: Build all workspaces
         run: npx nx run-many -t build --all
@@ -130,6 +174,15 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nx-${{ runner.os }}-
 
       - name: Build all workspaces
         run: npx nx run-many -t build --all
@@ -220,6 +273,15 @@ jobs:
 
       - run: npm ci
 
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nx-${{ runner.os }}-
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
@@ -294,6 +356,15 @@ jobs:
 
       - run: npm ci
 
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nx-${{ runner.os }}-
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
@@ -327,6 +398,15 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      - name: Cache Nx
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nx-${{ runner.os }}-
 
       - name: Build all workspaces
         run: npx nx run-many -t build --all
