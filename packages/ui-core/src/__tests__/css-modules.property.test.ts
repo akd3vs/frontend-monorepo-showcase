@@ -55,60 +55,77 @@ interface VarCall {
 
 /**
  * Extracts all var() calls from CSS content, handling nested var() in fallbacks.
+ * Supports multi-line var() calls by working on the full content string and mapping
+ * positions back to line numbers.
  * Returns the custom property name and fallback (if present).
  */
 function extractVarCalls(css: string, fileName: string): VarCall[] {
   const calls: VarCall[] = [];
-  const lines = css.split('\n');
 
-  for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
-    const line = lines[lineIdx]!;
-    // Find all var( occurrences in this line
-    let searchStart = 0;
-    while (true) {
-      const varStart = line.indexOf('var(', searchStart);
-      if (varStart === -1) break;
-
-      // Parse the var() call respecting nested parentheses
-      let depth = 0;
-      let i = varStart + 4; // after 'var('
-      depth = 1;
-      const start = varStart;
-
-      while (i < line.length && depth > 0) {
-        if (line[i] === '(') depth++;
-        else if (line[i] === ')') depth--;
-        i++;
-      }
-
-      const fullCall = line.slice(start, i);
-      const inner = line.slice(varStart + 4, i - 1); // Content inside var(...)
-
-      // Split by first top-level comma to get property name and fallback
-      let commaPos = -1;
-      let parenDepth = 0;
-      for (let j = 0; j < inner.length; j++) {
-        if (inner[j] === '(') parenDepth++;
-        else if (inner[j] === ')') parenDepth--;
-        else if (inner[j] === ',' && parenDepth === 0) {
-          commaPos = j;
-          break;
-        }
-      }
-
-      const propertyName = commaPos === -1 ? inner.trim() : inner.slice(0, commaPos).trim();
-      const fallback = commaPos === -1 ? null : inner.slice(commaPos + 1).trim();
-
-      calls.push({
-        full: fullCall,
-        propertyName,
-        fallback,
-        line: lineIdx + 1,
-        file: fileName,
-      });
-
-      searchStart = i;
+  // Build a line-number lookup: for any character offset, find the 1-based line number
+  const lineBreaks: number[] = [];
+  for (let k = 0; k < css.length; k++) {
+    if (css[k] === '\n') lineBreaks.push(k);
+  }
+  function offsetToLine(offset: number): number {
+    let lo = 0;
+    let hi = lineBreaks.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (lineBreaks[mid]! < offset) lo = mid + 1;
+      else hi = mid;
     }
+    return lo + 1; // 1-based
+  }
+
+  let searchStart = 0;
+  while (true) {
+    const varStart = css.indexOf('var(', searchStart);
+    if (varStart === -1) break;
+
+    // Parse the var() call respecting nested parentheses (supports multi-line)
+    let depth = 1;
+    let i = varStart + 4; // after 'var('
+
+    while (i < css.length && depth > 0) {
+      if (css[i] === '(') depth++;
+      else if (css[i] === ')') depth--;
+      i++;
+    }
+
+    // If depth != 0, we have a malformed var() — skip it
+    if (depth !== 0) {
+      searchStart = varStart + 4;
+      continue;
+    }
+
+    const fullCall = css.slice(varStart, i);
+    const inner = css.slice(varStart + 4, i - 1); // Content inside var(...)
+
+    // Split by first top-level comma to get property name and fallback
+    let commaPos = -1;
+    let parenDepth = 0;
+    for (let j = 0; j < inner.length; j++) {
+      if (inner[j] === '(') parenDepth++;
+      else if (inner[j] === ')') parenDepth--;
+      else if (inner[j] === ',' && parenDepth === 0) {
+        commaPos = j;
+        break;
+      }
+    }
+
+    const propertyName = commaPos === -1 ? inner.trim() : inner.slice(0, commaPos).trim();
+    const fallback = commaPos === -1 ? null : inner.slice(commaPos + 1).trim();
+
+    calls.push({
+      full: fullCall.replace(/\s+/g, ' '), // normalize whitespace for display
+      propertyName,
+      fallback: fallback ? fallback.replace(/\s+/g, ' ') : fallback,
+      line: offsetToLine(varStart),
+      file: fileName,
+    });
+
+    searchStart = i;
   }
 
   return calls;
@@ -121,34 +138,67 @@ function extractVarCalls(css: string, fileName: string): VarCall[] {
  * These are values that cannot be expressed as design tokens.
  */
 const _CSS_INHERENT_VALUES = new Set([
-  '0', '0px', '0%',
-  'none', 'transparent', 'inherit', 'initial', 'unset', 'revert',
-  'currentColor', 'currentcolor',
-  'auto', 'normal',
+  '0',
+  '0px',
+  '0%',
+  'none',
+  'transparent',
+  'inherit',
+  'initial',
+  'unset',
+  'revert',
+  'currentColor',
+  'currentcolor',
+  'auto',
+  'normal',
 ]);
 
 /**
  * System color keywords used in forced-colors mode — always acceptable.
  */
 const SYSTEM_COLORS = new Set([
-  'Canvas', 'CanvasText', 'LinkText', 'VisitedText', 'ActiveText',
-  'ButtonFace', 'ButtonText', 'ButtonBorder', 'Field', 'FieldText',
-  'Highlight', 'HighlightText', 'SelectedItem', 'SelectedItemText',
-  'Mark', 'MarkText', 'GrayText',
+  'Canvas',
+  'CanvasText',
+  'LinkText',
+  'VisitedText',
+  'ActiveText',
+  'ButtonFace',
+  'ButtonText',
+  'ButtonBorder',
+  'Field',
+  'FieldText',
+  'Highlight',
+  'HighlightText',
+  'SelectedItem',
+  'SelectedItemText',
+  'Mark',
+  'MarkText',
+  'GrayText',
   // Lowercase variants
-  'canvas', 'canvastext', 'linktext', 'visitedtext', 'activetext',
-  'buttonface', 'buttontext', 'buttonborder', 'field', 'fieldtext',
-  'highlight', 'highlighttext', 'selecteditem', 'selecteditemtext',
-  'mark', 'marktext', 'graytext',
+  'canvas',
+  'canvastext',
+  'linktext',
+  'visitedtext',
+  'activetext',
+  'buttonface',
+  'buttontext',
+  'buttonborder',
+  'field',
+  'fieldtext',
+  'highlight',
+  'highlighttext',
+  'selecteditem',
+  'selecteditemtext',
+  'mark',
+  'marktext',
+  'graytext',
 ]);
 
 /**
  * Acceptable hardcoded pixel values for borders, border-radius, and outlines.
  * These are structural values that are not spacing tokens.
  */
-const _ACCEPTABLE_PX_VALUES = new Set([
-  '1px', '2px', '3px', '4px', '5px', '6px', '8px',
-]);
+const _ACCEPTABLE_PX_VALUES = new Set(['1px', '2px', '3px', '4px', '5px', '6px', '8px']);
 
 /**
  * CSS properties where percentage values from keyframes are acceptable.
@@ -246,7 +296,10 @@ function extractDeclarationValue(line: string): { property: string; value: strin
   const property = trimmed.slice(0, colonIdx).trim();
   let value = trimmed.slice(colonIdx + 1).trim();
   // Remove trailing semicolon and !important
-  value = value.replace(/\s*!important\s*$/, '').replace(/;$/, '').trim();
+  value = value
+    .replace(/\s*!important\s*$/, '')
+    .replace(/;$/, '')
+    .trim();
 
   // Skip CSS custom property declarations (--foo: value)
   if (property.startsWith('--')) return null;
@@ -341,15 +394,13 @@ describe('Property 4: CSS Variable Fallback Completeness', () => {
     const violations: string[] = [];
     for (const call of allVarCalls) {
       if (call.fallback === null || call.fallback === '') {
-        violations.push(
-          `${call.file}:${call.line} — ${call.full} is missing a fallback value`
-        );
+        violations.push(`${call.file}:${call.line} — ${call.full} is missing a fallback value`);
       }
     }
 
     expect(
       violations,
-      `Found var() calls without fallback values:\n${violations.join('\n')}`
+      `Found var() calls without fallback values:\n${violations.join('\n')}`,
     ).toHaveLength(0);
   });
 
@@ -372,7 +423,7 @@ describe('Property 4: CSS Variable Fallback Completeness', () => {
         // Every var() call must have a non-empty fallback
         return call.fallback !== null && call.fallback.length > 0;
       }),
-      { numRuns: Math.min(100, allVarCalls.length) }
+      { numRuns: Math.min(100, allVarCalls.length) },
     );
   });
 
@@ -387,7 +438,7 @@ describe('Property 4: CSS Variable Fallback Completeness', () => {
         // All var() calls in this file must have fallbacks
         return calls.every((call) => call.fallback !== null && call.fallback.length > 0);
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });
@@ -401,10 +452,20 @@ describe('Property 5: CSS Modules Reference Only Token Custom Properties', () =>
    * CSS properties that typically hold color values.
    */
   const COLOR_PROPERTIES = new Set([
-    'color', 'background-color', 'background', 'border-color',
-    'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
-    'outline-color', 'fill', 'stroke', 'text-decoration-color',
-    'box-shadow', 'border',
+    'color',
+    'background-color',
+    'background',
+    'border-color',
+    'border-top-color',
+    'border-right-color',
+    'border-bottom-color',
+    'border-left-color',
+    'outline-color',
+    'fill',
+    'stroke',
+    'text-decoration-color',
+    'box-shadow',
+    'border',
   ]);
 
   it('discovers component CSS module files', () => {
@@ -450,9 +511,9 @@ describe('Property 5: CSS Modules Reference Only Token Custom Properties', () =>
 
     expect(
       violations,
-      `Found hardcoded color literals outside var() calls:\n${violations.map(
-        (v) => `  ${v.file}:${v.line} — "${v.value}" in "${v.context}"`
-      ).join('\n')}`
+      `Found hardcoded color literals outside var() calls:\n${violations
+        .map((v) => `  ${v.file}:${v.line} — "${v.value}" in "${v.context}"`)
+        .join('\n')}`,
     ).toHaveLength(0);
   });
 
@@ -501,15 +562,26 @@ describe('Property 5: CSS Modules Reference Only Token Custom Properties', () =>
         const nonSystemColors = hardcodedColors.filter((c) => !SYSTEM_COLORS.has(c));
         return nonSystemColors.length === 0;
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
   it('no hardcoded font-family names outside var() calls (except as generic fallbacks)', () => {
     // Generic font families are acceptable standalone
     const GENERIC_FONTS = new Set([
-      'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui',
-      'ui-serif', 'ui-sans-serif', 'ui-monospace', 'ui-rounded', 'emoji', 'math', 'fangsong',
+      'serif',
+      'sans-serif',
+      'monospace',
+      'cursive',
+      'fantasy',
+      'system-ui',
+      'ui-serif',
+      'ui-sans-serif',
+      'ui-monospace',
+      'ui-rounded',
+      'emoji',
+      'math',
+      'fangsong',
     ]);
 
     const violations: string[] = [];
@@ -540,7 +612,7 @@ describe('Property 5: CSS Modules Reference Only Token Custom Properties', () =>
         for (const font of remainingFonts) {
           if (!GENERIC_FONTS.has(font)) {
             violations.push(
-              `${file.name}:${lineIdx + 1} — hardcoded font-family "${font}" outside var() fallback`
+              `${file.name}:${lineIdx + 1} — hardcoded font-family "${font}" outside var() fallback`,
             );
           }
         }
@@ -551,7 +623,7 @@ describe('Property 5: CSS Modules Reference Only Token Custom Properties', () =>
     // is acceptable. We're only checking fonts that appear completely outside var().
     expect(
       violations,
-      `Found hardcoded font-family names outside var() calls:\n${violations.join('\n')}`
+      `Found hardcoded font-family names outside var() calls:\n${violations.join('\n')}`,
     ).toHaveLength(0);
   });
 
@@ -583,7 +655,7 @@ describe('Property 5: CSS Modules Reference Only Token Custom Properties', () =>
 
         return true;
       }),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });
