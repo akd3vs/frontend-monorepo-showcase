@@ -17,6 +17,10 @@ export default defineConfig({
         replacement: path.resolve(__dirname, '../../packages/design-tokens/src/dark.css'),
       },
       {
+        find: '@frontend-monorepo-showcase/design-tokens/css/high-contrast',
+        replacement: path.resolve(__dirname, '../../packages/design-tokens/src/high-contrast.css'),
+      },
+      {
         find: '@frontend-monorepo-showcase/design-tokens/css',
         replacement: path.resolve(__dirname, '../../packages/design-tokens/src/tokens.css'),
       },
