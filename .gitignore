@@ -26,6 +26,7 @@ Thumbs.db
 
 # Test coverage
 coverage
+.coverage-reports
 
 # MSW generated service worker (regenerated via `npx msw init public/`)
 apps/host-shell/public/mockServiceWorker.js
