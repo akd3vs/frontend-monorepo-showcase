@@ -15,6 +15,9 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  NX_SKIP_NX_CACHE: true
+
 jobs:
   lint-typecheck:
     name: Lint & Type Check
@@ -30,15 +33,6 @@ jobs:
           cache: npm
 
       - run: npm ci
-
-      - name: Cache Nx
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
-            nx-${{ runner.os }}-
 
       - name: Register ESLint problem matcher
         run: echo "::add-matcher::.github/problem-matchers/eslint.json"
@@ -107,15 +101,6 @@ jobs:
 
       - run: npm ci
 
-      - name: Cache Nx
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
-            nx-${{ runner.os }}-
-
       - name: Register Vitest problem matcher
         run: echo "::add-matcher::.github/problem-matchers/vitest.json"
 
@@ -137,15 +122,6 @@ jobs:
           cache: npm
 
       - run: npm ci
-
-      - name: Cache Nx
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
-            nx-${{ runner.os }}-
 
       - name: Build all workspaces
         run: npx nx run-many -t build --all
@@ -174,15 +150,6 @@ jobs:
           cache: npm
 
       - run: npm ci
-
-      - name: Cache Nx
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
-            nx-${{ runner.os }}-
 
       - name: Build all workspaces
         run: npx nx run-many -t build --all
@@ -273,15 +240,6 @@ jobs:
 
       - run: npm ci
 
-      - name: Cache Nx
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
-            nx-${{ runner.os }}-
-
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
@@ -356,15 +314,6 @@ jobs:
 
       - run: npm ci
 
-      - name: Cache Nx
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
-            nx-${{ runner.os }}-
-
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
@@ -398,15 +347,6 @@ jobs:
           cache: npm
 
       - run: npm ci
-
-      - name: Cache Nx
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
-            nx-${{ runner.os }}-
 
       - name: Build all workspaces
         run: npx nx run-many -t build --all
