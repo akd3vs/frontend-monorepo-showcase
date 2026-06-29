@@ -69,16 +69,12 @@ export interface TableRowProps {
   className?: string;
 }
 
-/** Props for the Table.Cell sub-component. */
-export interface TableCellProps {
+/** Props for the Table.Cell sub-component. Extends native td/th attributes. */
+export interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
   /** Content of the cell. Can be any React node. */
   children: React.ReactNode;
   /** Whether this cell is a header cell (renders as th instead of td). Auto-detected in Table.Header. */
   header?: boolean;
-  /** The scope attribute for header cells. Indicates whether the header relates to a column, row, or group. */
-  scope?: 'col' | 'row' | 'colgroup' | 'rowgroup';
-  /** Additional CSS class name to apply to the cell element. */
-  className?: string;
 }
 
 // ─── Validation Helpers ──────────────────────────────────────────────────────
@@ -181,7 +177,13 @@ function TableRow({ children, className }: TableRowProps): React.ReactElement {
   );
 }
 
-function TableCell({ children, header, scope, className }: TableCellProps): React.ReactElement {
+function TableCell({
+  children,
+  header,
+  scope,
+  className,
+  ...rest
+}: TableCellProps): React.ReactElement {
   useTableContext(); // Validates we're inside Table
   const section = useTableSectionContext();
   const inRow = useTableRowContext();
@@ -198,14 +200,18 @@ function TableCell({ children, header, scope, className }: TableCellProps): Reac
   if (isHeader) {
     const cellClassName = [styles['headerCell'], className].filter(Boolean).join(' ');
     return (
-      <th scope={scope ?? 'col'} className={cellClassName || undefined}>
+      <th scope={scope ?? 'col'} className={cellClassName || undefined} {...rest}>
         {children}
       </th>
     );
   }
 
   const cellClassName = [styles['bodyCell'], className].filter(Boolean).join(' ');
-  return <td className={cellClassName || undefined}>{children}</td>;
+  return (
+    <td className={cellClassName || undefined} {...rest}>
+      {children}
+    </td>
+  );
 }
 
 // ─── Root Component ──────────────────────────────────────────────────────────

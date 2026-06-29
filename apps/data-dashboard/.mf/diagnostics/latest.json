@@ -1,10 +1,10 @@
 {
   "latestErrorEvent": {
     "code": "TYPE-001",
-    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"npx tsc --project /Users/andre/dev/angela/frontend-monorepo-showcase/apps/data-dashboard/node_modules/.federation/tsconfig.b01c07f9add4d9546c67925dd51837fe.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
+    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"npx tsc --project /Users/andre/dev/angela/frontend-monorepo-showcase/apps/data-dashboard/node_modules/.federation/tsconfig.746d4fc6a4b952bcc98e8151f30fde54.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
     "args": {
-      "cmd": "npx tsc --project /Users/andre/dev/angela/frontend-monorepo-showcase/apps/data-dashboard/node_modules/.federation/tsconfig.b01c07f9add4d9546c67925dd51837fe.json"
+      "cmd": "npx tsc --project /Users/andre/dev/angela/frontend-monorepo-showcase/apps/data-dashboard/node_modules/.federation/tsconfig.746d4fc6a4b952bcc98e8151f30fde54.json"
     },
-    "timestamp": 1782696245563
+    "timestamp": 1782697357818
   }
 }
